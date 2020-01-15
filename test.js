@@ -23,6 +23,8 @@ const {
     test_paths_private_key
 } = require('./test_paths')
 
+const { test_modal_sign } = require('./test_modal_signin')
+
 const test = async function(){
     await start()
 
@@ -45,7 +47,10 @@ const test = async function(){
 
     //await test_paths_no_address()
     //await test_paths_visitor()
-    await test_paths_private_key()
+    //await test_paths_private_key()
+
+    await test_modal_sign()
+
     return true
 }
 
