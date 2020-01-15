@@ -24,6 +24,7 @@ exports.test_dashboard_no_address = async function() {
     await close_or_open_modal_sign()
     await close_or_open_modal_sign()
     await test_buttons_visitor()
+    await signout_from_header_button()
 }
 
 
@@ -56,10 +57,11 @@ exports.test_dashboard_visitor = async function() {
     await goto_dashboard()
     await test_buttons_visitor()
     await test_help_items()
+    await signout_from_header_button()
 }
 
 
-exports.test_dashboard_private = async function(){
+exports.test_dashboard_private_key = async function(){
     await signin_with_header_button('private_key', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
     await goto_dashboard()
     await test_buttons_private_key()
@@ -103,6 +105,7 @@ exports.test_dashboard_private = async function(){
 
 
 const test_help_items = async function(){
+    console.log('test dashboard help items')
     for(let i = 0;i < 30;i++) {
         await click(`dashboard-help-item-container >.help-item:nth-child(${get_num_from_1_to_n(3)}) > .button`)
         await click('help-detail-back')
@@ -111,10 +114,12 @@ const test_help_items = async function(){
 
 
 const test_buttons_visitor = async function(){
+    console.log('test dashboard buttons in visitor mode')
     for(let i = 0;i < 30;i++) await click(buttons[get_num_from_0_to_less_n(2)])
 }
 
 const test_buttons_private_key = async function(){
+    console.log('test dashboard buttons with private key')
     for(let i = 0;i < 30;i++) {
         await click(buttons[get_num_from_0_to_less_n(2)])
         await goto_dashboard()
