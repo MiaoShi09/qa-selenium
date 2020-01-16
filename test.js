@@ -26,12 +26,12 @@ const {
 const { test_modal_sign } = require('./test_modal_signin')
 
 
-/*global.global_private_key = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5'
-global.global_visitor_address = '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4'*/
+global.global_private_key = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5'
+global.global_visitor_address = '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4'
 
 
-global.global_private_key = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff11ff8d4e72fddd7c426adb4a5aeebb98b8a4752c4a9048f65537789a810348573b'
-global.global_visitor_address = '0xa038ea9a946679d2a293b208898679a67cc1d4eb071d0fbe8d151c315ccc2c58'
+/*global.global_private_key = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff11ff8d4e72fddd7c426adb4a5aeebb98b8a4752c4a9048f65537789a810348573b'
+global.global_visitor_address = '0xa038ea9a946679d2a293b208898679a67cc1d4eb071d0fbe8d151c315ccc2c58'*/
 
 const test = async function(){
     await start()

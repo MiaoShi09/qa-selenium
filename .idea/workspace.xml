@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a08f3fc-535b-4e54-982e-588db14fb3fa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test_staking/test_modal_pool.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dashboard/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_dashboard/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_no_address.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_no_address.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_private_key.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_private_key.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_visitor.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_visitor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_staking/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/common-utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common-utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
