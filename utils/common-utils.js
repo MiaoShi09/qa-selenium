@@ -242,7 +242,7 @@ global.get_delegations_len = async function() {
 }
 
 
-global.close_transaction_success_modal = async  function(count = 5){
+global.close_transaction_success_modal = async  function(count = 10){
     if(count < 1) return
     await driver.sleep(500)
     await close_staking_warning_modal()
@@ -291,13 +291,25 @@ global.click_console_top_full_amount = async function() {
 
 
 async function signin_private_key(){
-    await signin_with_header_button('private_key', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
+    await signin_with_header_button('private_key', global_private_key)
 }
 async function signin_visitor(){
-    await signin_with_header_button('visitor', '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4')
+    await signin_with_header_button('visitor', global_visitor_address)
 }
 
 
 global.signin_private_key = signin_private_key
 
 global.signin_visitor = signin_visitor
+
+
+global.get_address = async function(){
+    let address = await executeScript('return getState().account.address')
+    let count = 5
+    while((!address) && (count > 0)) {
+        count--
+        address = await executeScript('return getState().account.address')
+        await driver.sleep(500)
+    }
+    return address
+}

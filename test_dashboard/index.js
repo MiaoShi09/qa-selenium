@@ -29,7 +29,7 @@ exports.test_dashboard_no_address = async function() {
 
 
 exports.test_dashboard_visitor = async function() {
-    await signin_with_header_button('visitor', '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4')
+    await signin_with_header_button('visitor', global_visitor_address)
     await goto_dashboard()
     await test_buttons_visitor()
     await test_help_items()
@@ -39,7 +39,7 @@ exports.test_dashboard_visitor = async function() {
     await test_help_items()
     await signout_from_account()
 
-    await signin_with_header_button('visitor', '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4')
+    await signin_with_header_button('visitor', global_visitor_address)
     await goto_dashboard()
     await test_buttons_visitor()
     await test_help_items()
@@ -49,7 +49,7 @@ exports.test_dashboard_visitor = async function() {
     await test_help_items()
     await signout_from_staking()
 
-    await signin_with_header_button('visitor', '0xa095541186b2e53698244e231274a0754678664d2655d0e233aa3b9a03d21ef4')
+    await signin_with_header_button('visitor', global_visitor_address)
     await goto_dashboard()
     await test_buttons_visitor()
     await test_help_items()
@@ -62,7 +62,7 @@ exports.test_dashboard_visitor = async function() {
 
 
 exports.test_dashboard_private_key = async function(){
-    await signin_with_header_button('private_key', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
+    await signin_with_header_button('private_key', global_private_key)
     await goto_dashboard()
     await test_buttons_private_key()
     await test_help_items()
@@ -72,7 +72,7 @@ exports.test_dashboard_private_key = async function(){
     await test_help_items()
     await signout_from_account()
 
-    await signin_with_header_button('visiprivate_keytor', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
+    await signin_with_header_button('private_key', global_private_key)
     await goto_dashboard()
     await test_buttons_private_key()
     await test_help_items()
@@ -82,7 +82,7 @@ exports.test_dashboard_private_key = async function(){
     await test_help_items()
     await signout_from_staking()
 
-    await signin_with_header_button('private_key', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
+    await signin_with_header_button('private_key', global_private_key)
     await goto_dashboard()
     await test_buttons_private_key()
     await test_help_items()
@@ -92,7 +92,7 @@ exports.test_dashboard_private_key = async function(){
     await test_help_items()
     await signout_from_header_button()
 
-    await signin_with_header_button('private_key', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff76a1592044a6e4f511265bca73a604d90b0529d1df602be30a19a9257660d1f5')
+    await signin_with_header_button('private_key', global_private_key)
     await goto_dashboard()
     await test_buttons_private_key()
     await test_help_items()

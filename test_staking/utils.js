@@ -49,6 +49,10 @@ exports.switch_tab_finalization = async function() {
     await click('staking-tab-finalizations')
 }
 
+exports.switch_tab_commission_rate_changes = async function(){
+    await click('staking-tab-commission-rate-changes')
+}
+
 exports.get_balance = async function(){
     let balance = parseFloat(await executeScript('return getState().balance.toFixed()'))
     let count = 5
@@ -61,3 +65,49 @@ exports.get_balance = async function(){
 
     return balance
 }
+
+
+exports.open_register_modal = async function() {
+    let ele = await ele_can_click('modal-pool-close')
+    if(ele) return
+    await click('register-edit-pool')
+    let count = 5
+    let ele1 = await ele_can_click('modal-signin-close')
+    let ele2 = await ele_can_click('modal-pool-close')
+    while((!ele1) && (!ele2) && (count > 0)) {
+        ele = await ele_can_click('modal-pool-close')
+        if(ele) return
+        ele1 = await ele_can_click('modal-signin-close')
+        ele2 = await ele_can_click('modal-pool-close')
+        count--
+        await click('register-edit-pool')
+        await driver.sleep(500)
+    }
+}
+
+
+exports.close_register_modal = async function() {
+    let count = 5
+    let ele = await ele_can_click('modal-pool-close')
+    while((!ele) && (count > 0)) {
+        ele = await ele_can_click('modal-pool-close')
+        count--
+        await driver.sleep(1000)
+    }
+    console.log('find modal pool close button:', !!ele)
+    if(ele) await ele.click()
+}
+
+exports.get_commission_rate_changes_len = async function(){
+    let len = await executeScript('return getState().commission_rate_changes.length')
+    let count = 10
+    while((!len) && (count > 0)) {
+        len = await executeScript('return getState().commission_rate_changes.length')
+        console.log('get commission rate changes len:', len)
+        count--
+        await driver.sleep(1000)
+    }
+    return len
+}
+
+

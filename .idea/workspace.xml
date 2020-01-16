@@ -2,31 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a08f3fc-535b-4e54-982e-588db14fb3fa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_auto_delegation_rewards.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_delegate.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_no_address.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_private_key.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_transfer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_undelegate.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_visitor.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/test_staking_withdraw.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_staking/utils.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/staking_table.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_staking/test_modal_pool.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_account.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_account/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_console.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_console/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_dashboard/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_paths/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_modal-sign.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_modal_signin/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_pool.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_pool_detail/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_staking.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_statistics.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_statistics/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common-utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dashboard/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_dashboard/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_no_address.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_no_address.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_private_key.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_private_key.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_staking/test_staking_visitor.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/test_staking_visitor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_staking/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_staking/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/common-utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common-utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -93,7 +77,8 @@
       <workItem from="1578627021896" duration="25731000" />
       <workItem from="1578883130933" duration="21404000" />
       <workItem from="1578969806234" duration="30756000" />
-      <workItem from="1579057443831" duration="19170000" />
+      <workItem from="1579057443831" duration="24803000" />
+      <workItem from="1579142191189" duration="4199000" />
     </task>
     <servers />
   </component>
@@ -105,7 +90,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

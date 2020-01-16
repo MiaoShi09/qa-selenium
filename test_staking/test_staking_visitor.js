@@ -1,4 +1,12 @@
-const { switch_tabs_visitor, switch_tab_pool, switch_tab_finalization, switch_tab_rewards, switch_tab_delegation} = require('./utils')
+const { switch_tabs_visitor,
+    switch_tab_pool,
+    switch_tab_finalization,
+    switch_tab_rewards,
+    switch_tab_delegation,
+    switch_tab_commission_rate_changes,
+    open_register_modal,
+    get_commission_rate_changes_len
+} = require('./utils')
 
 exports.test_staking_visitor = async function() {
     await goto_staking()
@@ -47,5 +55,13 @@ exports.test_staking_visitor = async function() {
         ['staking-table-finalizations-amount'])
     await click('staking-copy-refresh-clear-button-group .refresh')
     await click('staking-copy-refresh-clear-button-group .copy')
-    await signout_from_header_button()
+
+    await switch_tab_commission_rate_changes()
+    await switch_tabs_visitor()
+    await switch_tab_commission_rate_changes()
+
+    await open_register_modal()
+    const commisstion_rate_changes_len = get_commission_rate_changes_len()
+    for(let i = 0;i < 20;i++) await click_table_single_button('commission_rate_changes', get_num_from_1_to_n(commisstion_rate_changes_len), '.button')
+    await signout_from_staking()
 }

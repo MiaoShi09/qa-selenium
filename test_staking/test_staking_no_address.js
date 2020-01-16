@@ -1,4 +1,10 @@
-const { switch_tabs_no_address, switch_tab_delegation, switch_tab_rewards,switch_tab_finalization } = require('./utils')
+const { switch_tabs_no_address,
+    switch_tab_delegation,
+    switch_tab_rewards,
+    switch_tab_finalization,
+    switch_tab_commission_rate_changes,
+    open_register_modal
+} = require('./utils')
 
 exports.test_staking_no_address = async function() {
     await goto_staking()
@@ -66,5 +72,35 @@ exports.test_staking_no_address = async function() {
         ['staking-table-finalizations-amount'])
     await click('staking-copy-refresh-clear-button-group .refresh')
     await click('staking-copy-refresh-clear-button-group .copy')
+
+
+
+    await signin_visitor()
+    await signout_from_header_button()
+    await signin_private_key()
+    await signout_from_header_button()
+    await signin_visitor()
+
+    await switch_tab_commission_rate_changes()
+    await click('staking-copy-refresh-clear-button-group .clear-address')
+    await switch_tabs_no_address(1)
+    await click('staking-copy-refresh-clear-button-group .refresh')
+    await click('staking-copy-refresh-clear-button-group .copy')
+
+    await click(`staking-table-delegations tbody:nth-child(2) .finalization`)
+    await close_or_open_modal_sign()
+
+    await click(`staking-table-delegations tbody:nth-child(3) .finalization`)
+    await close_or_open_modal_sign()
+
+    await open_register_modal()
+    await close_or_open_modal_sign()
+
+    await open_register_modal()
+    await close_or_open_modal_sign()
+
+    await open_register_modal()
+    await close_or_open_modal_sign()
+
     await signout_from_header_button()
 }
