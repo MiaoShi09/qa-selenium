@@ -3,9 +3,9 @@ const chrome = require('selenium-webdriver/chrome');
 require('./common-utils')
 require('./staking_table')
 exports.start = async function(){
-    await chrome.setDefaultService(new chrome.ServiceBuilder('/usr/local/chromedriver').build());
+    await chrome.setDefaultService(new chrome.ServiceBuilder(process.env.chromedriver).build());
     global.driver = await new Builder().forBrowser('chrome').build();
-    await driver.get('https://localhost:3000');
+    await driver.get('https://192.168.50.118:3000');
 }
 
 
@@ -18,7 +18,7 @@ global.ele_can_click = async function(selector){
         ele = await find_ele(selector)
     }catch (e) {
     }
-    return (ele && await ele.isDisplayed()) ? ele : false
+    return (ele && await ele.isDisplayed()) ? ele : null
 }
 
 global.find_ele = async function(selector) {
