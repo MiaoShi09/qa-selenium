@@ -8,10 +8,11 @@ describe('Delegation', function(done) {
     await signin_private_key();
     const balance = await get_balance();
     expect(balance, 'balance should > 0, but is ' + balance).to.above(0);
+    await driver.sleep(4000)
   });
 
   afterEach(async function() {
-    await driver.sleep(10000);
+    await driver.sleep(1000);
   });
 
   it('test pools->console', async function() {
@@ -43,7 +44,7 @@ const find_active_pool = async () => {
     let ri = -1;
     for (let i = 0; i < pools.length; i++) {
       ri = get_num_from_0_to_less_n(pools.length);
-      if (pools[ri].active === '0x01' && parseInt(pools[ri].stake_self) >= 1000) {
+      if (pools[ri].active === '0x01' && parseFloat(pools[ri].stake_self) >= 1000) {
         break;
       }
     }
