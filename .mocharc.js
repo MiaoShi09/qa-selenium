@@ -2,8 +2,7 @@
 
 module.exports = {
   "spec": [
-    "./test/setup.js",
-    "./test/**/*.js"
+    "./test/**.test.js"
   ],
-  timeout: 20000,
+  timeout: 0,
 };

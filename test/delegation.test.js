@@ -1,33 +1,51 @@
+
 const { get_balance } = require("../test_staking/utils");
 const {expect} = require('chai');
+require("../utils/index");
+log.updateLogFile("delegate.test");
 
-describe('Delegation', function(done) {
-  beforeEach(async function() {
-    await driver.navigate().to(base_url);
-    await goto_staking();
-    await signin_private_key();
-    const balance = await get_balance();
-    expect(balance, 'balance should > 0, but is ' + balance).to.above(0);
-    await driver.sleep(4000)
-  });
 
-  afterEach(async function() {
-    await driver.sleep(1000);
-  });
 
-  it('test pools->console', async function() {
-    let ri = await find_active_pool();
-    await click_table_single_button('staking-table-pools', ri + 1, '.button')
-    await delegate_in_console(Math.random());
-  });
+if(TEST_CONFIG.current_target=='electron'){
+  describe('Delegation', function(done) {
+    beforeEach(async function() {
 
-  it('test pools->pool detail->console', async function() {
-    let ri = await find_active_pool();
-    await click_table_row('staking-table-pools', ri + 1);
-    await click('pool-detail-delegate');
-    await delegate_in_console(Math.random());
+      if(global.driver == null){
+        log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
+        await start(TEST_CONFIG.current_target);
+      }
+     // await global.driver.navigate().to(TEST_CONFIG.url);
+      await goto_staking();
+      await signin_private_key();
+      const balance = await get_balance();
+      expect(balance, 'balance should > 0, but is ' + balance).to.above(0);
+      await driver.sleep(TEST_CONFIG.short_timeout)
+    });
+
+    afterEach(async function() {
+      await driver.sleep(TEST_CONFIG.short_timeout);
+    });
+
+    it('test pools->console', async function() {
+      let ri = await find_active_pool();
+      await click_table_single_button('staking-table-pools', ri + 1, '.button')
+      await delegate_in_console(Math.random());
+    });
+
+    it('test pools->pool detail->console', async function() {
+      let ri = await find_active_pool();
+      await click_table_row('staking-table-pools', ri + 1);
+      await click('pool-detail-delegate');
+      await delegate_in_console(Math.random());
+    });
   });
-});
+}else{
+  xdescribe('Delegation', function() {
+    xit("chrome only allows ledger signin; Skip automated test on delegation on Chrome");
+  })
+}
+
+
 
 const delegate_in_console = async (amount) => {
     await input_console(amount);
