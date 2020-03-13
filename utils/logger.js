@@ -7,8 +7,9 @@ const DEFAULT_LOG_FOLDER = TEST_CONFIG.log_config.log_dir_prefix+(new Date()).to
 const LEVEL_VALUE={
   divider:0,
   error:0,
-  info:1,
-  debug:2
+  checked:1,
+  info:2,
+  debug:3
 }
 var _instance = null;
 
@@ -53,11 +54,21 @@ class Logger{
   info(info){
     if(this.level >= LEVEL_VALUE.info){
       if(this.enableConsoleLog){
-        console.log("\x1b[96m%s\x1b[0m","[INFO]");
-        console.log(info);
+        console.log("\x1b[96m%s\x1b[0m","[INFO]",info);
+       
       }
       fs.appendFileSync(DEFAULT_LOG_FOLDER+"/"+this.filename+".log","[INFO] \t"+JSON.stringify(info)+"\n");
       this._logReport("[INFO]",info);
+
+    }
+  }
+  checked(verifyInfo){
+    if(this.level >= LEVEL_VALUE.checked){
+      if(this.enableConsoleLog){
+        console.log("\x1b[32m%s\t%s\x1b[0m","[CHECKED]",verifyInfo);
+      }
+      fs.appendFileSync(DEFAULT_LOG_FOLDER+"/"+this.filename+".log","[CHECKED] \t"+JSON.stringify(verifyInfo)+"\n");
+      this._logReport("[CHECKED]",verifyInfo);
 
     }
   }
@@ -65,8 +76,8 @@ class Logger{
   debug(debugInfo){
     if(this.level >= LEVEL_VALUE.debug){
       if(this.enableConsoleLog){
-        console.log("[DEBUG]");
-        console.log(debugInfo);
+        console.log("[DEBUG]%s", debugInfo);
+        
       }
       fs.appendFileSync(DEFAULT_LOG_FOLDER+"/"+this.filename+".log","[DEBUG]\t"+JSON.stringify(debugInfo)+"\n");
       this._logReport("[DEBUG]",debugInfo);

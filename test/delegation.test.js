@@ -7,7 +7,7 @@ log.updateLogFile("delegate.test");
 
 
 if(TEST_CONFIG.current_target=='electron'){
-  describe('Delegation', function(done) {
+  describe('Delegation', function() {
     beforeEach(async function() {
 
       if(global.driver == null){
@@ -28,14 +28,14 @@ if(TEST_CONFIG.current_target=='electron'){
 
     it('test pools->console', async function() {
       let ri = await find_active_pool();
-      await click_table_single_button('staking-table-pools', ri + 1, '.button')
+      await click_table_single_button('#staking-table-pools', ri + 1, '.button')
       await delegate_in_console(Math.random());
     });
 
     it('test pools->pool detail->console', async function() {
       let ri = await find_active_pool();
-      await click_table_row('staking-table-pools', ri + 1);
-      await click('pool-detail-delegate');
+      await click_table_row('#staking-table-pools', ri + 1);
+      await click('#pool-detail-delegate');
       await delegate_in_console(Math.random());
     });
   });
@@ -51,13 +51,13 @@ const delegate_in_console = async (amount) => {
     await input_console(amount);
     await pop_submit_button();
     await submit_transaction();
-    let btn = await find_element_n_times('modal-transaction-success-back');
+    let btn = await find_element_n_times('#modal-transaction-success-back');
     await btn.click(); 
     await driver.navigate().back();
 }
 
 const find_active_pool = async () => {
-    const pools = JSON.parse(await executeScript('return JSON.stringify(getState().pools)'));
+    const pools = JSON.parse((await get_current_state()).pools);
     expect(pools.length, "pool length should > 0, but is " + pools.length).to.above(0);
     let ri = -1;
     for (let i = 0; i < pools.length; i++) {

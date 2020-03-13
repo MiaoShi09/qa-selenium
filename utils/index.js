@@ -18,19 +18,20 @@ global.ele_can_click = async function(selector){
         ele = await find_ele(selector)
     }catch (e) {
         log.error(e);
-        log.error(`find element ${[',', '#'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`);
+        log.error(`finding element ${[',', '#','.'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`);
         throw e;
     }
     return (ele && await ele.isDisplayed() && await ele.isEnabled()) ? ele : null
 }
 
-global.find_ele = async function(selector) {
-    log.info(`find element ${[',', '#'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`)
-    return await driver.findElement(By.css(`${[',', '#'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`));
+global.find_ele = async function(selector, parent = driver) {
+    log.info(`finding element ${[',', '#','.'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`)
+    //return driver.findElement(By.css(`${[',', '#','.'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`));
+    return parent.findElement(By.css(selector));
 }
 
 global.find_eles = async function(selector) {
-    return await driver.findElements(By.css(`${[',', '#'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`));
+    return await driver.findElements(By.css(`${[',', '#','.'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`));
 }
 
 global.click = async function(selector, time = TEST_CONFIG.wait_time){
@@ -39,23 +40,25 @@ global.click = async function(selector, time = TEST_CONFIG.wait_time){
         await ele.click();
         log.info(`clicked element ${[',', '#'].indexOf(selector[0]) > -1 ? selector : ('#' + selector)}`);
         await driver.sleep(time)
+    }else{
+        throw new Error("unable to locate "+ selector);
     }
 }
 
 global.input = async function(selector, key = '', time = TEST_CONFIG.wait_time) {
     await (await find_ele(selector)).clear();
     await (await find_ele(selector)).sendKeys(key);
-    await driver.sleep(time)
+    return driver.sleep(time)
 }
 
-global.executeScript = async function (script, time = TEST_CONFIG.wait_time) {
-    const res = await driver.executeScript(script)
-    await driver.sleep(time)
-    return res;
+global.get_current_state = async function (detail) {
+    return driver.executeScript("return getState()"+detail);
+    //await driver.sleep(time)
+    //return res;
 }
 
 global.screenshot = async function(fileName, dirName = log.log_dir()){
-    const screenshot_base64 = await driver.takeSreenshot();
+    const screenshot_base64 = await (await driver.findElement(By.css("body"))).takeSreenshot();
     let screenshot_data = screenshot_base64.replace(/^data:image.png;base64,/, "");
 
     if (!fs.existsSync(dirName)){
@@ -75,8 +78,9 @@ global.start = async function(driverName = "chrome"){
         global.driver = await new Builder().forBrowser('chrome').build();
         log.info("opening Chrome browser");
 
-        await driver.get(TEST_CONFIG.url);
+        await driver.get(TEST_CONFIG.domain.chrome);
         await driver.sleep(TEST_CONFIG.wait_time);
+        await driver.manage().window().maximize();
         if((await driver.getTitle()) == "Privacy error"){
             log.info("solve the privacy issue");
             await click("#details-button");
@@ -87,26 +91,22 @@ global.start = async function(driverName = "chrome"){
             await click("#proceed-link");
             await driver.sleep(TEST_CONFIG.short_timeout);
         }
-        return driver.navigate().to(TEST_CONFIG.url);
+        return driver.navigate().to(TEST_CONFIG.domain.chrome);
 
     }else if(driverName == "electron"){
         console.log("app="+process.env.HOME+TEST_CONFIG.upk)
-        let builder = new Builder().usingServer("http://localhost:9515")
+        global.driver = await new Builder().usingServer("http://localhost:9515")
             .disableEnvironmentOverrides() 
            .withCapabilities({
-              chromeOptions: {
-                  binary: process.env.HOME+"/"+TEST_CONFIG.upk,//'/home/aion/Desktop/si-amity-linux-x64-0.9.3-0310/si-linux-x64/si',//resources/app/electron.js',
-                  windowTypes: [ "app", "webview" ]
-            }
-       })
-    .forBrowser("electron")
-            console.log(builder.getCapabilities());
-            console.log(builder)
-        global.driver = await builder
+                      chromeOptions: {
+                          binary: process.env.HOME+"/"+TEST_CONFIG.upk,
+                          windowTypes: [ "app", "webview" ]
+                    }
+               })
+            .forBrowser("electron")  
             .build();
 
-        log.info("opening desktop applicatoin")
-        await driver.sleep(TEST_CONFIG.long_timeout);
+        log.info("opening desktop application")
         return driver.wait(until.elementLocated(By.css("img.logo")), TEST_CONFIG.short_timeout);
         
     }else{
