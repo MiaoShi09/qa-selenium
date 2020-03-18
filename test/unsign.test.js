@@ -17,30 +17,33 @@ const SIGN_IN_MODAL = '#modal_signin'
 
 const SIGN_IN_MODAL_ELES = {
     electron:['.middle1 .info a','.middle1 #modal-signin-ledger-button',
-        '#modal-signin-keystore-file-button','#modal-signin-private-key-button','#modal-signin-mnenomic-phrase-button',
+        '#modal-signin-keystore-file-button','#modal-signin-private-key-button','#modal-signin-mnemonic-phrase-button',
         '.bottom #modal-signin-browse-button'],
     chrome:['.middle1 .info a','.middle1 #modal-signin-ledger-button',
-        '#modal-sigin-download-windows','#modal-sigin-download-mac','#modal-sigin-download-linux',
+        '#modal-signin-download-windows','#modal-signin-download-mac','#modal-signin-download-linux',
         '.bottom #modal-signin-browse-button']
 }
 
 
 
-describe("Unsign Tests",async()=>{
+describe("Unsign Tests",function(){
     beforeEach(async ()=>{
+      
         if(global.driver == null){
             log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
             await start(TEST_CONFIG.current_target);
          }
+         await driver.sleep(TEST_CONFIG.wait_time);
          let type = await get_current_state(".account.type");
          while(type != ''){
             log.info("Detected the application is not in sign out mode; sign out current account first");
             try{
-                await click(SIGNIN_IN_OUT_BTN)
+                await signout_from_staking()
             }catch(e){
                 log.info(e.message);
                 // await click("#sidebar-menu-account");
                 // await driver.wait(until.elementLocated(By.css(SIGN_OUT_CROSS_BTN)), TEST_CONFIG.short_timeout);
+                await screenshot(this.currentTest+" error");
                 await signout_from_staking();
             }
             type = await get_current_state(".account.type");
@@ -49,7 +52,7 @@ describe("Unsign Tests",async()=>{
 
     });
 
-    it("Dashboard without signin", async()=>{
+    it("Dashboard without signin", async function(){
         await goto_dashboard();
         try{
             let active_btn = await find_ele(".active");
@@ -74,12 +77,12 @@ describe("Unsign Tests",async()=>{
             return Promise.resolve()
         }catch(e){
             log.error(e.message);
-            await screenshot(this.currentTest);
+            await screenshot(this.test.title+" error");
             return Promise.reject(e);
         }
 
     });
-    it("Account without signin",async()=>{
+    it("Account without signin",async function(){
         await goto_account();
         try{
             let active_btn = await find_ele(".active");
@@ -105,11 +108,11 @@ describe("Unsign Tests",async()=>{
 
         }catch(e){
             log.error(e.message);
-            await screenshot(this.currentTest);
+            await screenshot(this.test.title+" error");
             return Promise.reject(e);
         }
     });
-    it("Staking without signin",async()=>{
+    it("Staking without signin",async function(){
         await goto_staking();
         try{
             let active_btn = await find_ele(".active");
@@ -135,11 +138,11 @@ describe("Unsign Tests",async()=>{
 
         }catch(e){
             log.error(e.message);
-            await screenshot(this.currentTest);
+            await screenshot(this.test.title+" error");
             return Promise.reject(e);
         }
     });
-    it("Open signin modal from dashbard", async ()=>{
+    it("Open signin modal from dashbard", async function(){
          await goto_dashboard();
          try{
             log.info("try open sign in modal from header btn");
@@ -153,23 +156,138 @@ describe("Unsign Tests",async()=>{
             await close_modal();
          }catch(e){
             log.error(e.message);
-            screenshot()
+            await screenshot(this.test.title+" error");
             return Promise.reject(e);
          }
     });
 
-    it("Open signin modal from account", async ()=>{
-         await goto_account();
-    });
+    it("Open signin modal from account", async function(){
+        await goto_account();
+        try{
+             log.info("try open sign in modal from header btn");
+             await click(SIGNIN_IN_OUT_BTN);
+             await check_signin_modal_elems();
+             await close_modal();
+             log.info("try open sign in modal on modal")
+             await click("#modal-unsignined-signin");
+             await check_signin_modal_elems();
+             await close_modal();
+             
+        }catch(e){
+            log.error(e.message);
+           
+            await screenshot(this.test.title+" error");
+            return Promise.reject(e);
+        }
 
-    it("Open signin modal from staking - tabs", async ()=>{
-         await goto_staking();
     });
-
-    it("Open signin modal from staking - random delegate btn", async ()=>{
+    it("Open signin modal from staking -headers", async function(){
         await goto_staking();
+        await driver.sleep(TEST_CONFIG.wait_time);
+        try{
+             log.info("try open sign in modal from header btn");
+             await click(SIGNIN_IN_OUT_BTN);
+             await check_signin_modal_elems();
+             await close_modal();             
+        }catch(e){
+            log.error(e.message);
+           
+            await screenshot(this.test.title+" error");
+            return Promise.reject(e);
+        }
+
     })
 
+    it("Open signin modal from staking - tabs", async function(){
+         await goto_staking();
+         await driver.sleep(TEST_CONFIG.wait_time);
+         try{
+            log.info("try open sign in modal from tab headers");
+            for(let index = 0; index< STAKING_ELES.length; index++){
+                let selector = STAKING_ELES[index];
+                log.debug(selector);
+                log.debug(index);
+                let visiblity = await (await find_ele("#staking-table-pools")).isDisplayed();
+                log.debug("clicking "+selector+": #staking-table-pools visiblity is "+ visiblity);
+                await click(selector);
+                await driver.sleep(TEST_CONFIG.wait_time);
+                if( index > 0 ){
+                    await check_signin_modal_elems();
+                    await close_modal();
+                }else{
+                    expect(await (await find_ele("#staking-table-pools")).isDisplayed()).to.be.true;
+                    expect(await (await find_ele(SIGN_IN_MODAL)).isDisplayed()).to.be.false;
+                }
+
+             }
+             
+        }catch(e){
+            log.error(e.message);
+            await screenshot(this.test.title+" error");
+            return Promise.reject(e);
+        }
+
+    });
+
+    it("Open signin modal from staking - random delegate btn", async function(){
+        await goto_staking();
+        await driver.sleep(TEST_CONFIG.short_timeout);
+        try{
+            log.info("When not sign in any account, clicking delegate button should opens sign in modal");
+            let num_pools = await get_current_state(".pools.length");
+            log.debug(num_pools);
+            for(let i =0; i < 2; i ++){
+                let random_num = get_num_from_1_to_n(num_pools);
+                await click(`#staking-table-pools table tr:nth-child(${random_num}) .button`);
+                await check_signin_modal_elems();
+                await close_modal();        
+                await driver.sleep(TEST_CONFIG.wait_time);
+            }
+        }catch(e){
+            log.error(e.message);
+            await screenshot(this.test.title+" error");
+            return Promise.reject(e);
+        }
+
+    });
+
+    it("Open siginin modal from staking pool page", async function(){
+        await goto_staking();
+        await driver.sleep(TEST_CONFIG.short_timeout);
+         try{
+            log.info("When not sign in any account, clicking delegate button in each staking pool page opens sign in modal");
+            let num_pools = await get_current_state(".pools.length");
+            log.debug(num_pools);
+            for(let i =0; i < 2; i ++){
+                let random_num = get_num_from_1_to_n(num_pools);
+                await click(`#staking-table-pools table tr:nth-child(${random_num})`);
+                await driver.sleep(TEST_CONFIG.wait_time);
+                expect(await (await find_ele("#pool-detail")).isDisplayed()).to.be.true;
+                await click('#pool-detail-delegate.button');
+                await check_signin_modal_elems();
+                await close_modal();        
+                await driver.sleep(TEST_CONFIG.wait_time);
+                log.info("try open sign in modal from header btn");
+                await click(SIGNIN_IN_OUT_BTN);
+                await check_signin_modal_elems();
+                await close_modal();             
+                await click_back_img();
+
+            }
+        }catch(e){
+            log.error(e.message);
+            await screenshot(this.test.title+" error");
+            return Promise.reject(e);
+        }
+    });
+
+    it("User should not be able to access console page", async function(){
+        let console_url = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/staking/console";
+        await driver.navigate(console_url);
+        await driver.sleep(TEST_CONFIG.short_timeout);
+        expect(await driver.getCurrentUrl()).not.to.equal(console_url);
+        log.checked("current url is not "+console_url);
+    })
 });
 
 
@@ -177,7 +295,7 @@ async function check_signin_modal_elems(){
     let browser = TEST_CONFIG.current_target;
     let signin_modal = await find_ele(SIGN_IN_MODAL);
 
-    expect(await (await find_ele(SIGN_IN_MODAL)).isDisplayed()).to.be.true;
+    expect(await signin_modal.isDisplayed()).to.be.true;
     log.checked("Sigin in modal opened")
     SIGN_IN_MODAL_ELES[browser].forEach(async(selector)=>{
         expect(await (await find_ele(selector,signin_modal)).isDisplayed()).to.be.true;

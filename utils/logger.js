@@ -25,8 +25,9 @@ class Logger{
         fs.mkdirSync(DEFAULT_LOG_FOLDER);
     }
     //this.path = DEFAULT_LOG_FOLDER+"/"+__filename+".log";
-    this.level = LEVEL_VALUE[TEST_CONFIG.log_config.level] || LEVEL_VALUE["info"];
-    this.enableConsoleLog = TEST_CONFIG.log_config.enable_console || true;
+    this.level = LEVEL_VALUE[TEST_CONFIG.log_config.level];
+
+    this.enableConsoleLog = TEST_CONFIG.log_config.enable_console;
     _instance = this;
     this.test = {};
     this.filename = "logs"

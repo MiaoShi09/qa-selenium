@@ -1,3 +1,5 @@
+const { By, Until } = require('selenium-webdriver');
+
 global.close_or_open_modal_sign = async function(){
     log.info('close or open modal_sign')
     const modal_sign_can_click = await ele_can_click('#modal-signin-close')
@@ -7,43 +9,54 @@ global.close_or_open_modal_sign = async function(){
 }
 
 global.close_modal = async function(){
-    log,info("Close the modal");
-    let opened_modal = (await find_ele("#modal-*-close")).filter(async (elem)=>{ return await elem.isDisplayd();});
-    return opened_modal[0].click();
+    log.info("Close the modal");
+    let close_cross_imgs = await find_eles("svg[id$='-close']");
+    log.debug("close image elements on current page"+close_cross_imgs.length);
+    let close_btn_onScreen = await close_cross_imgs.filter(async(elem)=>{ 
+                    return await elem.isDisplayed();
+            })[0];
+    return close_btn_onScreen.click();
+}
+
+global.click_back_img = async function(){
+    log.info("Click '<-' image on the navigator");
+    return click(".navigator svg");
 }
 
 
 
-global.signin_with_header_button = async function(type = 'private_key', ...data) {
+global.signin_with_header_button = async function(type = 'private_key', mode = "standard", ...data) {
     log.info('signin with header button:', type, data)
-    const address_type = await executeScript('return getState().account.type')
-    if(type === address_type) return
-    let modal_sign_can_click = await ele_can_click('modal-signin-close')
 
-    let count  = 5
-
-    while((!modal_sign_can_click) && (count > 0)) {
-        await click('header-signin-out')
-        modal_sign_can_click = await ele_can_click('modal-signin-close')
-        count--
-        await driver.sleep(500)
-    }
-
-    if(!await ele_can_click('modal-signin-close')) throw 'can not open modal signin'
-
-    if(type === 'private_key') {
-        await click('#modal-signin-private-key-button')
-        await input('modal-signin-private-key-input', data[0])
-        await click('modal-signin-private-key-signin')
-    } else if (type === 'visitor') {
-        await input('modal-signin-input-browse-address', data[0])
-        await click('modal-signin-browse-button')
+    await click("#header-signin-out");
+    if(await (await find_ele("#modal_signin")).isDisplayed()){
+        if(mode === 'pool'){
+            let pool_option = await driver.findElement(By.xpath("//div[@value='pool']"));
+            await pool_option.click();
+            log.debug("check if pool mode is selected: " + await pool_option.getAttribute("class"));
+        }
+        if(type === 'private_key') {
+            await click('#modal-signin-private-key-button');
+            await input('#modal-signin-private-key-input', data[0]);
+            await click('#modal-signin-private-key-signin');
+        } else if (type === 'visitor') {
+            await input('#modal-signin-input-browse-address', data[0]);
+            await click('#modal-signin-browse-button');
+        }else if (type === 'phrase'){
+            await click('#modal-signin-mnemonic-phrase-button');
+            await input('#modal-signin-mnemonic-textarea', data[0]);
+            await click('#modal-signin-mnemonic-signin');
+        }else{
+            throw new Error("Invalid signin type");
+        }
+    }else{
+        throw new Error("Signin Modal failed to open");
     }
 }
 
 global.signout_from_staking = async function() {
-    log.info('signout from staking')
-    await click('sidebar-menu-staking')
+    log.info('#signout from staking')
+    await click('#sidebar-menu-staking')
     let ele = ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
     let count = 5
     while(!ele) {
@@ -56,7 +69,7 @@ global.signout_from_staking = async function() {
 
 global.signout_from_account = async function() {
     log.info('signout from account')
-    await click('sidebar-menu-account')
+    await click('#sidebar-menu-account')
     const ele = ele_can_click('#account-copy-refresh-clear-button-group .clear-address')
     if(ele) await click('#account-copy-refresh-clear-button-group .clear-address')
 }
