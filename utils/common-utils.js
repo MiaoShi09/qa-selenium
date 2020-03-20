@@ -62,7 +62,7 @@ global.signout_from_staking = async function() {
     while(!ele) {
         ele = ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
         count--
-        await driver.sleep(500)
+        await driver.sleep(TEST_CONFIG.wait_time)
     }
     if(ele) await click('#staking-copy-refresh-clear-button-group .clear-address')
 }
@@ -129,7 +129,7 @@ const dashboard_help_suffixs = ['', 'Staking Actions', 'Staking Pool', 'Account 
 global.skip_to_dashboard = async function() {
     const url = `https://localhost:3000/dashboard/${dashboard_help_suffixs[get_num_from_0_to_less_n(dashboard_help_suffixs.length)]}`
     log.info('skip to dashboard:', url)
-    await executeScript(`window.location = '${url}'`)
+    await executeScript(`window.location = '${url}'`);
 }
 
 
@@ -137,14 +137,6 @@ global.skip_to_account = async function() {
     await executeScript(`window.location = 'https://localhost:3000/account'`)
 }
 
-const menus = ['sidebar-menu-staking', 'sidebar-menu-account', 'sidebar-menu-dashboard']
-
-global.test_menus = async function () {
-    log.info('test menus')
-    for(let i = 0;i < 15;i++) {
-        await click(menus[get_num_from_0_to_less_n(3)])
-    }
-}
 
 global.signout_from_header_button = async function() {
     log.info('signout from header button')
@@ -287,12 +279,12 @@ global.close_transation_error = async function(){
 }
 global.click_console_pool_list = async function() {
     log.info('click console pool list select')
-    await click('staking-console-bottom-pool-list')
+    await click('#staking-console-bottom-pool-list')
 }
 
 global.click_console_to_pool_list = async function() {
     log.info('click console to pool list select')
-    await click('staking-console-bottom-to-pool-list')
+    await click('#staking-console-bottom-to-pool-list')
 }
 
 global.random_select_from_console_pool_list = async function() {
@@ -305,8 +297,8 @@ global.random_select_from_console_pool_list = async function() {
 global.random_select_from_console_to_pool_list = async function() {
     log.info('select an pool from console to pool list randomly')
     await click_console_to_pool_list()
-    const list = await find_eles('staking-console-bottom-to-pool-list li')
-    await (await find_ele(`staking-console-bottom-to-pool-list ul > li:nth-child(${get_num_from_1_to_n(list.length)})`)).click()
+    const list = await find_eles('#staking-console-bottom-to-pool-list li')
+    await (await find_ele(`#staking-console-bottom-to-pool-list ul > li:nth-child(${get_num_from_1_to_n(list.length)})`)).click()
 }
 
 global.click_console_top_full_amount = async function() {
