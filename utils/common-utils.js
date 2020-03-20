@@ -74,6 +74,12 @@ global.signout_from_account = async function() {
     if(ele) await click('#account-copy-refresh-clear-button-group .clear-address')
 }
 
+global.signout_from_pool = async function() {
+    log.info("signout from pool");
+    goto_pool();
+    await click(".clear-address");
+}
+
 global.get_num_from_1_to_n = function(n) {
     return Math.ceil(Math.random() * n)
 }
@@ -102,49 +108,8 @@ global.goto_pool = async function(){
     return click("#sidebar-menu-pool-management")
 }
 
-const pool_detail_suffixs = ['0xa0ce1062d72bae67bce48509e1b196753d2a90655be1402c0069ecc0cd47210e', '', 'rgfwergferwgewrg']
-
-global.skip_to_pool_detail = async function(){
-    const url = `https://localhost:3000/pool/${ pool_detail_suffixs[get_num_from_0_to_less_n(pool_detail_suffixs.length)] }`
-    log.info('goto pool detail:', url)
-    await executeScript(`window.location = '${url}'`)
-}
-
-global.skip_to_console = async function() {
-    log.info('goto console')
-    await executeScript(`window.location = 'https://localhost:3000/staking/console'`)
-}
-
-const table_names = ['', 'pools', 'finalizations', 'delegations', 'Rewards & Auto-delegation', 'refgesrfgergf']
-
-global.skip_to_staking = async function() {
-    const url = `https://localhost:3000/staking/${table_names[get_num_from_0_to_less_n(table_names.length)]}`
-    log.info('skip to staking:', url)
-    await executeScript(`window.location = '${url}'`)
-}
-
-const dashboard_help_suffixs = ['', 'Staking Actions', 'Staking Pool', 'Account Page', 'regfersgse']
 
 
-global.skip_to_dashboard = async function() {
-    const url = `https://localhost:3000/dashboard/${dashboard_help_suffixs[get_num_from_0_to_less_n(dashboard_help_suffixs.length)]}`
-    log.info('skip to dashboard:', url)
-    await executeScript(`window.location = '${url}'`)
-}
-
-
-global.skip_to_account = async function() {
-    await executeScript(`window.location = 'https://localhost:3000/account'`)
-}
-
-const menus = ['sidebar-menu-staking', 'sidebar-menu-account', 'sidebar-menu-dashboard']
-
-global.test_menus = async function () {
-    log.info('test menus')
-    for(let i = 0;i < 15;i++) {
-        await click(menus[get_num_from_0_to_less_n(3)])
-    }
-}
 
 global.signout_from_header_button = async function() {
     log.info('signout from header button')

@@ -9,7 +9,8 @@ global.TEST_CONFIG = require("../test_config.json");
 
 require("./logger")
 
-
+global.checkBalance = require("./rpc_utils").checkBalance;
+global.getTestCoin = require("./rpc_utils").getTestCoin;
 
 
 
