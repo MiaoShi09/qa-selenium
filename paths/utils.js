@@ -8,26 +8,30 @@ global.skip_to_pool_detail = async function(){
 
 global.skip_to_console = async function() {
     log.info('navigate to staking console page');
-    return driver.navigate().to(`${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/console`)
+    await driver.navigate().to(`${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/console`);
+    return driver.sleep(TEST_CONFIG.wait_time);
 }
 
 
 global.skip_to_staking = async function(tab_name) {
     const url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${tab_name}`
     log.info('navigate to staking section:', url)
-    return driver.navigate().to(url);
+    await driver.navigate().to(url);
+    return driver.sleep(TEST_CONFIG.wait_time);
 }
 
 
 global.skip_to_help_page = async function(help_name) {
     const url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/dashboard/${help_name}`
     log.info('skip to dashboard:', url)
-    return driver.navigate().to(url);
+    await driver.navigate().to(url);
+    return driver.sleep(TEST_CONFIG.wait_time);
 }
 
 
 global.skip_to_menu_item = async function(menu_item_name) {
 	const url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_item_name}`
     log.info('skip to menu_item:', url)
-    return driver.navigate().to(url);
+    await driver.navigate().to(url);
+    return driver.sleep(TEST_CONFIG.wait_time);
 }

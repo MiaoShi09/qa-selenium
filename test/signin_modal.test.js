@@ -5,7 +5,7 @@ log.updateLogFile("signin_modal.test");
 describe("Signin modal Test",function(){
 	before(async function(){
 		let account_status = await get_current_state(".account");
-		if()
+		//if()
 	})
 
 })
@@ -65,6 +65,6 @@ async function signout_from_random_place(type){
 			await click('#header-signin-out');
 			break;
 		default:
-			await 
+			//await 
 	}
 }
