@@ -14,6 +14,8 @@ const DISABLED_BTNS = {
 	pool:["#pool-management-register-edit-pool.button"]
 }
 
+const INVALID_AION_ADDR = ["0x0000","0xa123456789012345678901234567890123456789012345678901234567890123"]
+
 describe("Browse Mode Test",function(){
 	describe("Browse Mode and Standard Mode", function(){
 		before(async function(){
@@ -176,6 +178,57 @@ describe("Browse Mode Test",function(){
 		})
 	})
 	
+	describe("Browse Mode negative test cases", function(){
+		before(async function(){
+			let account_state = await get_current_state(".account");
+
+			if(account_state.type !="visitor" || account_state.mode != "" ){
+				log.debug(JSON.stringify(account_state));
+				await signout_from_staking();
+			}
+
+		});
+
+		it("Sign in an INVALID aion address",async function(){
+			try{
+				await click("#header-signin-out");
+				if(await (await find_ele("#modal_signin")).isDisplayed()){
+					for(let i = 0; i < INVALID_AION_ADDR.length; i++){
+						await input('#modal-signin-input-browse-address', INVALID_AION_ADDR[i]);
+						await click("#modal-signin-browse-button")
+						expect(await (await find_eles(".message-container .message-item"))[0].getText()).to.equal("Invalid OAN address");
+						log.checked("error message for invalid address "+INVALID_AION_ADDR[i]+" is showed as expected.")
+					}
+				}
+			}catch(e){
+				log.error(e.message);
+		        await screenshot(this.test.title.substring(0,10)+" error");
+		        return Promise.reject(e);
+			}
+			
+		})
+
+		it("FIXED-BUG: Sign in pool management mode then open and close signin modal",async function(){
+			try{
+				await signin_with_header_button("visitor","pool",TEST_CONFIG.test_accounts.private_key.address);
+				await click("#header-signin-out");
+				let standard_option = await driver.findElement(By.xpath("//div[@value='standard']"));
+	            await standard_option.click();
+	            await close_modal();
+	            await goto_pool();
+	            let active_btn = await find_ele(".active");
+	            expect(await active_btn.getText()).to.equal("pool");
+	            log.checked("Pool on side bar is active as expected.");
+
+            }catch(e){
+				log.error(e.message);
+		        await screenshot(this.test.title.substring(0,10)+" error");
+		        return Promise.reject(e);
+			}
+		})
+
+
+	})
 
 });
 
