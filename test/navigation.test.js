@@ -1,7 +1,7 @@
 const { get_balance } = require("../test_staking/utils");
 const {expect} = require('chai');
 require("../utils/index");
-require("../paths/index")
+require("../paths/utils")
 log.updateLogFile("navigation.test");
 
 
@@ -14,7 +14,7 @@ const table_names = {
 	non_exist:['','refgesrfgergf']
 	}
 const dashboard_help_suffixs = {
-	exist:['Staking Actions', 'Staking Pool', 'Account Page'],
+	exist:['Staking%20Actions', 'Staking%20Pools', 'Account%20Page'],
 	non_exist:['', 'regfersgse']}
 
 const menu_items = ['dashboard','account','staking','pool']
@@ -23,9 +23,9 @@ const menu_items = ['dashboard','account','staking','pool']
 describe("navigate to different directly by address", function(){
 	describe("common navigation",function(){
 		for(let i = 0;i < 3;i++){
-			it("directly go to "+ menu_items[0],async function(){
+			it("directly go to "+ menu_items[i],async function(){
 				try{
-					await skip_to_menu_item(menu_items[0]);
+					await skip_to_menu_item(menu_items[i]);
 					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
 					expect(await driver.getCurrentUrl()).to.equal(expected_url);
 				}catch(e){
@@ -42,7 +42,8 @@ describe("navigate to different directly by address", function(){
 				it("direly go to help page "+help_page, async function(){
 					try{
 						await skip_to_help_page(help_page);
-						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/dashboard/${help_page}`;
+						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/dashboard/help/${help_page}`;
+						await driver.sleep(TEST_CONFIG.wait_time);
 						let current_url = await driver.getCurrentUrl();
 						log.debug(`Current url is ${current_url} and it should be ${key}.`);
 						if(key === 'exist'){
@@ -107,7 +108,7 @@ describe("navigate to different directly by address", function(){
 		});
 		it("users should NOT be able to access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
-			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
+			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
 			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
 		});
 
@@ -135,7 +136,7 @@ describe("navigate to different directly by address", function(){
 
 		it("users should NOT be able to  access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
-			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
+			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
 			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
 		});
 
@@ -155,7 +156,7 @@ describe("navigate to different directly by address", function(){
 
 		it("users should be able to access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
-			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
+			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
 			expect(await driver.getCurrentUrl()).to.equal(expected_url);
 		});
 

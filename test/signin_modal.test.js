@@ -8,6 +8,7 @@ const INVALID_NM_PHRASE = [""."wait try key run"]
 
 describe("Signin modal Test",function(){
 
+
 	describe("Common Test Cases",function(){
 		beforeEach(async function(){
 			let account_status = await get_current_state(".account");
@@ -155,6 +156,7 @@ describe("Signin modal Test",function(){
 
 			});
 		}
+
 	})
 
 })
@@ -256,5 +258,6 @@ async function verify_signin_success(addr,mode == "standard"){
 	}else{
 		 expect(await (await find_ele(selector)).isDisplayed()).to.be.false;
          log.checked("In "+mode+" "+selector+" is NOT displayed on screen as expected.");
+
 	}
 }

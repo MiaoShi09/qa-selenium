@@ -245,5 +245,6 @@ async function verifyLearnMoreBtn(dist){
 	let navigator = await find_ele(".help-detail-container .navigator");
 	expect(await navigator.getText()).to.have.string(dist);
 	log.checked("Landed on "+ dist+" section as expected");
+	log.debug(await driver.getCurrentUrl());
 	return click_back_img();
 }
