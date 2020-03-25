@@ -1,4 +1,5 @@
 const { By, Until } = require('selenium-webdriver');
+require('./table_utils')
 
 global.close_or_open_modal_sign = async function(){
     log.info('close or open modal_sign')
@@ -30,29 +31,36 @@ global.signin_with_header_button = async function(type = 'private_key', mode = "
 
     await click("#header-signin-out");
     if(await (await find_ele("#modal_signin")).isDisplayed()){
-        if(mode === 'pool'){
-            let pool_option = await driver.findElement(By.xpath("//div[@value='pool']"));
-            await pool_option.click();
-            log.debug("check if pool mode is selected: " + await pool_option.getAttribute("class"));
-        }
-        if(type === 'private_key') {
-            await click('#modal-signin-private-key-button');
-            await input('#modal-signin-private-key-input', data[0]);
-            await click('#modal-signin-private-key-signin');
-        } else if (type === 'visitor') {
-            await input('#modal-signin-input-browse-address', data[0]);
-            await click('#modal-signin-browse-button');
-        }else if (type === 'phrase'){
-            await click('#modal-signin-mnemonic-phrase-button');
-            await input('#modal-signin-mnemonic-textarea', data[0]);
-            await click('#modal-signin-mnemonic-signin');
-        }else{
-            throw new Error("Invalid signin type");
-        }
+        await filling_signin_modal(type,mode,...data);
     }else{
         throw new Error("Signin Modal failed to open");
     }
 }
+
+global.filling_signin_modal = async function(type='private_key',modal = "standard", ...data){
+    if(mode === 'pool'){
+            let pool_option = await driver.findElement(By.xpath("//div[@value='pool']"));
+            await pool_option.click();
+            log.debug("check if pool mode is selected: " + await pool_option.getAttribute("class"));
+    }
+    if(type === 'private_key') {
+        await click('#modal-signin-private-key-button');
+        await input('#modal-signin-private-key-input', data[0]);
+        await click('#modal-signin-private-key-signin');
+    } else if (type === 'visitor') {
+        await input('#modal-signin-input-browse-address', data[0]);
+        await click('#modal-signin-browse-button');
+    }else if (type === 'phrase'){
+        await click('#modal-signin-mnemonic-phrase-button');
+        await input('#modal-signin-mnemonic-textarea', data[0]);
+        await click('#modal-signin-mnemonic-signin');
+    }else{
+        throw new Error("Invalid signin type");
+    }
+}
+
+
+
 
 global.signout_from_staking = async function() {
     log.info('#signout from staking')
@@ -107,6 +115,15 @@ global.goto_pool = async function(){
     log.info("goto pool management");
     return click("#sidebar-menu-pool-management")
 }
+
+global.goto_pool_detail = async function(index){
+    if(index==undefined){
+        let poolnum = getState(".pools.length");
+        index = get_num_from_0_to_less_n(poolnum);
+    }
+    return click_table_row("#staking-table-pools",index);
+}
+
 
 global.signout_from_header_button = async function() {
     log.info('signout from header button')

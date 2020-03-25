@@ -1,17 +1,31 @@
 const {Builder, By, Key, action, until, Capabilities} = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome'); 
+const fs = require("fs");
+const{exec} = require("child_process");
 
 require('./common-utils');
-require('./staking_table');
-const fs = require("fs");
+
 
 global.TEST_CONFIG = require("../test_config.json");
-
 require("./logger")
+
 
 global.checkBalance = require("./rpc_utils").checkBalance;
 global.getTestCoin = require("./rpc_utils").getTestCoin;
 
+
+global.get_clipboard_content = new Promise((res,rej)=>{
+    let _command = "xclip -o";
+    exec(_command,function(err,stdout,stderr)=>{
+        log.debug(`try to get clipboard content: COMMAND:${_command}`);
+        log.debug(`try to get clipboard content: ERROR - ${err}; STDOUT - ${stdout}; stderr - ${stderr}`);
+        if(err){
+            throw err;
+        }
+        if(stdout) res(stdout);
+        else rej(stderr);
+    });
+});
 
 
 global.ele_can_click = async function(selector, parent = driver){
@@ -48,9 +62,6 @@ global.click = async function(selector, parent = driver,time = TEST_CONFIG.wait_
 }
 
 
-
-
-
 global.input = async function(selector, key = '', time = TEST_CONFIG.wait_time) {
     await (await find_ele(selector)).clear();
     await (await find_ele(selector)).sendKeys(key);
@@ -80,8 +91,6 @@ global.screenshot = async function(fileName, dirName = log.log_dir()){
         log.error("No driver find out; unable to take the screenshot")
     }
 }
-
-
 
 
 global.start = async function(driverName = "chrome"){
