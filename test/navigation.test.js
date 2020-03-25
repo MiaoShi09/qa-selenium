@@ -64,7 +64,7 @@ describe("navigate to different directly by address", function(){
 				it("direly go to help page "+pool_addr, async function(){
 					try{
 						await skip_to_staking(pool_addr);
-						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${pool_addr}`;
+						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/pool/${pool_addr}`;
 						let current_url = await driver.getCurrentUrl();
 						log.debug(`Current url is ${current_url} and it should be ${key}.`);
 						if(key === 'exist'){
@@ -105,11 +105,19 @@ describe("navigate to different directly by address", function(){
 	            type = await get_current_state(".account.type");
 	         }
 		});
-		it("pool should NOT be able to access pool section", async function(){
+		it("users should NOT be able to access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
 			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
 		});
+
+
+		table_names.exist.forEach((tab_name,index)=>{
+			it(tab_name +"should "+index<2?"":"NOT"+" be navigated directly ",async function(){
+
+			});
+		})
+
 	})
 
 	describe("when user uses standard mode",function(){
@@ -125,7 +133,7 @@ describe("navigate to different directly by address", function(){
 		})
 
 
-		it("pool should NOT be able to  access pool section", async function(){
+		it("users should NOT be able to  access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
 			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
@@ -145,11 +153,13 @@ describe("navigate to different directly by address", function(){
 			} 
 		})
 
-		it("pool should be able to access pool section", async function(){
+		it("users should be able to access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
 			expect(await driver.getCurrentUrl()).to.equal(expected_url);
 		});
 
 	});
+
+
 })
