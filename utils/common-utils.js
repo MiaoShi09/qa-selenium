@@ -37,7 +37,7 @@ global.signin_with_header_button = async function(type = 'private_key', mode = "
     }
 }
 
-global.filling_signin_modal = async function(type='private_key',modal = "standard", ...data){
+global.filling_signin_modal = async function(type='private_key',mode = "standard", ...data){
     if(mode === 'pool'){
             let pool_option = await driver.findElement(By.xpath("//div[@value='pool']"));
             await pool_option.click();

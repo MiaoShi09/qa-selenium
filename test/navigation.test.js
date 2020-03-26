@@ -9,15 +9,20 @@ const pool_detail_suffixs = {
 	exist:['0xa0ce1062d72bae67bce48509e1b196753d2a90655be1402c0069ecc0cd47210e'], 
 	non_exist:['','dadfklahfl']
 };
-const table_names = {
-	exist:['', 'pools', 'finalizations', 'delegations', 'Rewards & Auto-delegation'],
-	non_exist:['','refgesrfgergf']
-	}
+const table_names = ['', 'pools', 'finalizations', 'delegations', 'Rewards%20&%20Auto-delegation','refgesrfgergf'];
+	
+const staking_content = {
+	finalizations: "#staking-table-finalizations",
+	delegations: "#staking-table-delegations",
+	'Rewards%20&%20Auto-delegation': "#staking-table-rewards",
+	default:"#staking-table-pools"
+}
+
 const dashboard_help_suffixs = {
 	exist:['Staking%20Actions', 'Staking%20Pools', 'Account%20Page'],
-	non_exist:['', 'regfersgse']}
+	non_exist:[ 'regfersgse','']}
 
-const menu_items = ['dashboard','account','staking','pool']
+const menu_items = ['dashboard','account','staking','pool-management']
 
 
 describe("navigate to different directly by address", function(){
@@ -62,9 +67,9 @@ describe("navigate to different directly by address", function(){
 
 		for(let key in pool_detail_suffixs){
 			pool_detail_suffixs[key].forEach((pool_addr)=>{
-				it("direly go to help page "+pool_addr, async function(){
+				it("direly go to pool page "+pool_addr, async function(){
 					try{
-						await skip_to_staking(pool_addr);
+						await skip_to_pool_detail(pool_addr);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/pool/${pool_addr}`;
 						let current_url = await driver.getCurrentUrl();
 						log.debug(`Current url is ${current_url} and it should be ${key}.`);
@@ -98,9 +103,9 @@ describe("navigate to different directly by address", function(){
 	            try{
 	                await signout_from_staking()
 	            }catch(e){
-	                log.info(e.message);
+	                log.error(e.message);
 
-	                await screenshot(this.currentTest+" error");
+	                await screenshot(this.currentTest.substring(0,10)+" error");
 	                await signout_from_staking();
 	            }
 	            type = await get_current_state(".account.type");
@@ -113,9 +118,19 @@ describe("navigate to different directly by address", function(){
 		});
 
 
-		table_names.exist.forEach((tab_name,index)=>{
-			it(tab_name +"should "+index<2?"":"NOT"+" be navigated directly ",async function(){
+		table_names.forEach((tab_name,index)=>{
 
+			it("users should stay on staking pools tab when go to "+tab_name+" directly from url",async function(){
+				try{
+					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${tab_name}`
+					await skip_to_staking_tab(tab_name);
+					expect( await find_ele("#staking-table-pools")).not.to.be.null;
+					log.checked(`${expected_url} go to staking pools`);
+				}catch(e){
+ 					log.error(e.message);
+	                await screenshot(this.test.title.substring(0,10)+" error");
+	                throw e;
+				}
 			});
 		})
 
@@ -124,11 +139,12 @@ describe("navigate to different directly by address", function(){
 	describe("when user uses standard mode",function(){
 		beforeEach(async function(){
 			let account_state = await get_current_state(".account");
+			log.debug(account_state);
 
 			while(account_state.type !="visitor" || account_state.mode != "standard" ){
 				log.debug(JSON.stringify(account_state));
 				if(account_state.type!="") await signout_from_staking();
-				await signin_with_header_button("visitor","standard",TEST_ACCOUNT);
+				await signin_with_header_button("visitor","standard",TEST_CONFIG.test_accounts.private_key.address);
 				account_state = await get_current_state(".account");
 			}
 		})
@@ -140,6 +156,23 @@ describe("navigate to different directly by address", function(){
 			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
 		});
 
+
+		table_names.forEach((tab_name,index)=>{
+
+			it(`users should go to ${staking_content[tab_name]|| staking_content.default} when go to ${tab_name} directly from url`,async function(){
+				try{
+					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${tab_name}`
+					await skip_to_staking_tab(tab_name);
+					expect( await find_ele(staking_content[tab_name]|| staking_content.default)).not.to.be.null;
+					log.checked(`${expected_url} go to staking pools ${staking_content[tab_name]|| staking_content.default}`);
+				}catch(e){
+ 					log.error(e.message);
+	                await screenshot(this.test.title.substring(0,10)+" error");
+	                throw e;
+				}
+			});
+		})
+
 	})
 
 	describe("when user uses pool mode",function(){
@@ -149,7 +182,7 @@ describe("navigate to different directly by address", function(){
 			while(account_state.type !="visitor" || account_state.mode != "pool" ){
 				log.debug(JSON.stringify(account_state));
 				if(account_state.type!="") await signout_from_staking();
-				await signin_with_header_button("visitor","pool",TEST_ACCOUNT);
+				await signin_with_header_button("visitor","pool",TEST_CONFIG.test_accounts.private_key.address);
 				account_state = await get_current_state(".account");
 			} 
 		})
