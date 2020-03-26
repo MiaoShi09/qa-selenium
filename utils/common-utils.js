@@ -1,5 +1,6 @@
-const { By, Until } = require('selenium-webdriver');
+const { By, Until, Key } = require('selenium-webdriver');
 require('./table_utils')
+var SendKeys = require("sendkeys-js")
 
 global.close_or_open_modal_sign = async function(){
     log.info('close or open modal_sign')
@@ -54,6 +55,18 @@ global.filling_signin_modal = async function(type='private_key',mode = "standard
         await click('#modal-signin-mnemonic-phrase-button');
         await input('#modal-signin-mnemonic-textarea', data[0]);
         await click('#modal-signin-mnemonic-signin');
+    }else if (type === 'keystore'){
+        await click("#modal-signin-keystore-file-button");
+        await click("#modal-signin-keystore-step_0-file a");
+        await driver.sleep(TEST_CONFIG.wait_time);
+        let allWindowHandles=await driver.getAllWindowHandles();
+        log.debug(allWindowHandles.length);
+        console.log(allWindowHandles[0])
+        await driver.switchTo().alert();
+        await SendKeys.send(data[0]);
+        
+        
+        await click("#modal-signin-keystore-continue")
     }else{
         throw new Error("Invalid signin type");
     }
@@ -118,7 +131,7 @@ global.goto_pool = async function(){
 
 global.goto_pool_detail = async function(index){
     if(index==undefined){
-        let poolnum = getState(".pools.length");
+        let poolnum = await get_current_state(".pools.length");
         index = get_num_from_0_to_less_n(poolnum);
     }
     return click_table_row("#staking-table-pools",index);

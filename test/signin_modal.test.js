@@ -3,11 +3,16 @@ require("../utils/common-utils");
 log.updateLogFile("signin_modal.test");
 
 
-const INVALID_NM_PHRASE = [""."wait try key run"]
+const INVALID_NM_PHRASE = ["","wait try key run"]
 
 
 describe("Signin modal Test",function(){
-
+	afterEach(async function(){
+		//close signin modal
+		if(await( await find_ele("#modal_signin")).isDisplayed())
+			await click("svg#modal-signin-close");
+		
+	})
 
 	describe("Common Test Cases",function(){
 		beforeEach(async function(){
@@ -16,18 +21,23 @@ describe("Signin modal Test",function(){
 				await signout_from_random_place(account_status.type);
 			}
 			await driver.sleep(TEST_CONFIG.wait_time);
+
 			await goto_random_place();
+			await click("#header-signin-out");
 		});
 
 		it("Signin with ledger when ledger is NOT connected", async function(){
 			try{
+
 				await click("#modal-signin-ledger-button");
+
 				expect(await (await find_ele("#modal_signin_ledger")).isDisplayed()).to.be.true;
 				await click("#modal-signin-ledger-signin");
 				await driver.sleep(TEST_CONFIG.short_timeout);
 				expect(await( await find_ele("#modal_signin_ledger p.err")).isDisplayed()).to.be.true;
-				await click("#modal_signin_ledger svg.modal-sigin-ledger-back");
+				await click("#modal_signin_ledger svg#modal-signin-ledger-back");
 				expect(await( await find_ele("#modal_signin_ledger")).isDisplayed()).to.be.false;
+				expect(await( await find_ele("#modal_signin")).isDisplayed()).to.be.true;
 
 			}catch(e){
 				log.error(e.message);
@@ -41,8 +51,10 @@ describe("Signin modal Test",function(){
 			it("Signin with INVALID private key", async function(){
 				try{
 					await filling_signin_modal("private_key",'standard',TEST_CONFIG.test_accounts.private_key.pk.substring(0,128));
-					log.debug(await (await find_eles(".message-container .message-item"))[0].getText() + "is the error message");
-					expect(await (await find_eles(".message-container .message-item"))[0].getText()).to.equal("Invalid private key")
+					log.debug(await (await find_ele("#modal-signin-private-key p.err")).getText() + "is the error message");
+					expect(await (await find_ele("#modal-signin-private-key p.err")).getText()).to.equal("Invalid private key");
+					await click("svg#modal-signin-private-key-back");
+					expect(await( await find_ele("#modal_signin")).isDisplayed()).to.be.true;
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -55,9 +67,11 @@ describe("Signin modal Test",function(){
 				try{
 					for(let i = 0; i < INVALID_NM_PHRASE.length; i++){
 						await filling_signin_modal("phrase",'standard',INVALID_NM_PHRASE[i]);
-						log.debug(await (await find_eles(".message-container .message-item"))[0].getText() + "is the error message");
-						expect(await (await find_eles(".message-container .message-item"))[0].getText()).to.equal("Invalid nmenomic phrase")
-
+						let error_msg = await(await find_ele("#modal-signin-mnemonic p.err")).getText();
+						log.debug(error_msg + "is the error message");
+						expect(error_msg).to.equal("Invalid mnemonic");
+						await click("svg#modal-signin-mnemonic-back");
+						expect(await( await find_ele("#modal_signin")).isDisplayed()).to.be.true;
 					}
 				}catch(e){
 					log.error(e.message);
@@ -79,6 +93,7 @@ describe("Signin modal Test",function(){
 			}
 			await driver.sleep(TEST_CONFIG.wait_time);
 			await goto_random_place();
+			await click("#header-signin-out");
 		});
 
 
@@ -87,7 +102,7 @@ describe("Signin modal Test",function(){
 			it("standard mode: Signin with private key", async function(){
 				try{
 					await filling_signin_modal("private_key",'standard',TEST_CONFIG.test_accounts.private_key.pk);
-					verify_signin_success(TEST_CONFIG.test_accounts.private_key.address);
+					await verify_signin_success(TEST_CONFIG.test_accounts.private_key.address);
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -100,7 +115,7 @@ describe("Signin modal Test",function(){
 			it("standard mode: Signin with nmenomic phrase", async function(){
 				try{
 					await filling_signin_modal("phrase",'standard',TEST_CONFIG.test_accounts.nmenomic_phrase.words);
-					verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address);
+					await verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address);
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -111,20 +126,34 @@ describe("Signin modal Test",function(){
 
 
 
-			xit("standard mode: Open keystore file",async function(){
-
+			xit("standard mode: Signin with keystore file",async function(){
+				try{
+					await filling_signin_modal("keystore",'standard',TEST_CONFIG.test_accounts.keystore.path);
+					await verify_signin_success(TEST_CONFIG.test_accounts.keystore.address);
+				}catch(e){
+					log.error(e.message);
+			        await screenshot(this.test.title.substring(0,10)+" error");
+			        return Promise.reject(e);
+				}
 			});
 		}
 	})
 
 	describe("Sign in pool modal",function(){
 		beforeEach(async function(){
-			let account_status = await get_current_state(".account");
-			if(account_status.type!="" || account_status.type !="visitor"){
-				await signout_from_random_place(account_status.type);
+			try{
+				let account_status = await get_current_state(".account");
+				if(account_status.type!="" || account_status.type !="visitor"){
+					await signout_from_random_place(account_status.type);
+				}
+				await driver.sleep(TEST_CONFIG.wait_time);
+				await goto_random_place();
+				await click("#header-signin-out");
+			}catch(e){
+				log.error(e.message);
+			    await screenshot(this.currentTest.substring(0,10)+" error");
+			    return Promise.reject(e);
 			}
-			await driver.sleep(TEST_CONFIG.wait_time);
-			await goto_random_place();
 		});
 
 
@@ -133,8 +162,8 @@ describe("Signin modal Test",function(){
 		if(TEST_CONFIG.current_target == "electron"){
 			it("pool modal: Signin with private key", async function(){
 				try{
-					await filling_signin_modal("private_key",'pool',TEST_CONFIG.test_accounts.private_key.pk);
-					verify_signin_success(TEST_CONFIG.test_accounts.private_key.address);
+					await filling_signin_modal("private_key",'pool',TEST_CONFIG.test_accounts.private_key.pk);					
+					await verify_signin_success(TEST_CONFIG.test_accounts.private_key.address,'pool');
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -147,7 +176,7 @@ describe("Signin modal Test",function(){
 			it("pool modal: Signin with nmenomic phrase", async function(){
 				try{
 					await filling_signin_modal("phrase",'pool',TEST_CONFIG.test_accounts.nmenomic_phrase.words);
-					verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address);
+					await verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address,'pool');
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -167,12 +196,14 @@ describe("Signin modal Test",function(){
 async function goto_random_place(){
 	let random_method = get_num_from_0_to_less_n(5);
 	let account_status = await get_current_state(".account");
+	log.debug(random_method);
+	log.debug(account_status);
 	switch(random_method){
 		case 0:
 			if(account_status.mode == "pool"){
 				await goto_pool();
 				break;
-			}else continue;
+			}
 		case 1:
 			
 			await goto_staking();
@@ -191,6 +222,7 @@ async function goto_random_place(){
 }
 
 async function signout_from_random_place(){
+	let mode = await get_current_state(".account.mode");
 	let random_method = get_num_from_0_to_less_n(7);
 	switch(random_method){
 		case 0:
@@ -228,10 +260,10 @@ async function signout_from_random_place(){
 	}
 }
 
-async function verify_signin_success(addr,mode == "standard"){
-	let active_btn = await find_ele(".active");
-	if(active_btn){
-		switch(await active_btn.getText()){
+async function verify_signin_success(addr,mode = "standard"){
+	let active_btn = await find_eles(".active");
+	if(active_btn.length >0){
+		switch(await active_btn[0].getText()){
 			case "account":
 				expect(await find_ele(`input[value="${addr}"]`,(await find_ele("#account-copy-refresh-clear-button-group")))).not.to.be.null;
 				log.checked('verified signin success on Account section');

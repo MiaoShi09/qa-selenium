@@ -12,7 +12,7 @@ global.get_table_len = async function(data_name) {
 
 
 global.click_table_row = async function (table, seq, call_back = async () => 0) {
-    log.into('click table row:', `${table} tbody>tr:nth-child(${seq})`)
+    log.info('click table row:', `${table} tbody>tr:nth-child(${seq})`)
     await click(`${table} tbody>tr:nth-child(${seq})`)
     await call_back()
 }

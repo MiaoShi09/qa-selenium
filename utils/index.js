@@ -14,7 +14,7 @@ global.checkBalance = require("./rpc_utils").checkBalance;
 global.getTestCoin = require("./rpc_utils").getTestCoin;
 
 
-global.get_clipboard_content = ()=>new Promise((res,rej)=>{
+global.get_clipboard_content = ()=> new Promise((res,rej)=>{
     let _command = "xclip -o";
     exec(_command,(err,stdout,stderr)=>{
         log.debug(`try to get clipboard content: COMMAND:${_command}`);
