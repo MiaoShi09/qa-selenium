@@ -161,54 +161,54 @@ global.click_pool_detail_buttons_private_key = async function() {
     log.info('click pool detail buttons with private key')
     for(let i = 0;i < 5;i++) {
         await click(pool_detial_buttons[get_num_from_0_to_less_n(pool_detial_buttons.length)])
-        const ele = await ele_can_click('staking-console-back')
-        if(ele) await click('staking-console-back')
-        const ele2 = await ele_can_click('modal_staking_warning-cancel')
-        if(ele2) await click('modal_staking_warning-cancel')
-        await click('pool-detail-back')
+        const ele = await ele_can_click('#staking-console-back')
+        if(ele) await click('#staking-console-back')
+        const ele2 = await ele_can_click('#modal_staking_warning-cancel')
+        if(ele2) await click('#modal_staking_warning-cancel')
+        await click('#pool-detail-back')
     }
 }
 
 global.input_console = async function (amount) {
     log.info('input console:', amount)
-    await input('staking-console-top-input', amount)
+    await input('#staking-console-top-input', amount)
 }
 
 global.pop_submit_button = async function(){
     log.info('pop console transaction confirm modal')
-    await click('staking-console-bottom-button')
+    await click('#staking-console-bottom-button')
 }
 
 global.submit_transaction = async function() {
     log.info('confirm transaction')
-    const ele = await ele_can_click('modal-transaction-confirm-button')
+    const ele = await ele_can_click('#modal-transaction-confirm-button')
     if(ele) await ele.click()
 }
 
 global.pool_detail_go_back = async function() {
-    log.info('go back from pool detail')
-    await click('pool-detail-back')
+    log.info('go back from pool detail');
+    await click('#pool-detail-back')
 }
 
 global.console_go_back = async function() {
     log.info('go back from console')
-    await click('staking-console-back')
+    await click('#staking-console-back')
 }
 
 global.close_staking_warning_modal = async function(){
     log.info('close taking warning modal')
     const ele = await staking_warngin_modal_visible()
-    if(ele) await click('modal_staking_warning-cancel')
+    if(ele) await click('#modal_staking_warning-cancel')
 }
 
 global.staking_warngin_modal_visible = async function() {
     log.info('query if staking warning is visible')
-    return await ele_can_click('modal_staking_warning-cancel')
+    return await ele_can_click('#modal_staking_warning-cancel')
 }
 
 global.pool_detail_delegate_button = async function(){
     log.info('get pool detail delegate button')
-    await click('pool-detail-delegate')
+    await click('#pool-detail-delegate')
     const ele = await staking_warngin_modal_visible()
     if(ele) {
         await ele.click()
@@ -219,7 +219,7 @@ global.pool_detail_delegate_button = async function(){
 
 global.pool_detail_undelegate_button = async function(){
     log.info('get pool detail undelegate button')
-    await click('pool-detail-undelegate')
+    await click('#pool-detail-undelegate')
     const ele = await staking_warngin_modal_visible()
     if(ele) {
         await ele.click()
@@ -230,7 +230,7 @@ global.pool_detail_undelegate_button = async function(){
 
 global.pool_detail_withdraw_button = async function(){
     log.info('get pool detail withdraw button')
-    await click('pool-detail-withdraw')
+    await click('#pool-detail-withdraw')
     const ele = await staking_warngin_modal_visible()
     if(ele) {
         await ele.click()
@@ -242,7 +242,7 @@ global.pool_detail_withdraw_button = async function(){
 
 global.console_back_visible = async function() {
     log.info('query if console back button is visible')
-    return await ele_can_click('staking-console-back')
+    return await ele_can_click('#staking-console-back')
 }
 
 
@@ -376,11 +376,14 @@ global.signout_from_random_place=async function signout_from_random_place(){
 
 
 
-async function signin_private_key(){
-    await signin_with_header_button('private_key', TEST_CONFIG.test_accounts.private_key.pk)
+function signin_private_key(){
+    return signin_with_header_button('private_key','pool', TEST_CONFIG.test_accounts.private_key.pk)
 }
-async function signin_visitor(){
-    await signin_with_header_button('visitor', TEST_CONFIG.test_accounts.ledger["40"]);
+async function signin_nmenomic_phrase(){
+    return signin_with_header_button('phrase','pool', TEST_CONFIG.test_accounts.nmenomic_phrase.words)
+}
+function signin_visitor(){
+    return signin_with_header_button('visitor', 'pool',TEST_CONFIG.test_accounts.ledger["40"]);
 }
 
 
@@ -388,4 +391,5 @@ async function signin_visitor(){
 
 global.signin_private_key = signin_private_key
 
-global.signin_visitor = signin_visitor
+global.signin_visitor = signin_visitor;
+global.signin_phrase = signin_nmenomic_phrase;

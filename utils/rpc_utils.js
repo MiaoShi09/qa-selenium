@@ -10,10 +10,13 @@ exports.checkBalance = async function(addr){
 }
 
 exports.getTestCoin = async function(receiver, amount){
-	let signed_data = account_with_balance.signTransaction({
-		to:receiver, value:amount
+	let signed_data = await account_with_balance.signTransaction({
+		to:receiver, value:amount*1000000000000000000,gas:"0x5208"
 	});
-	web3.eth.sendSignedTransaction(signed_data).on('receipt',(receipt)=>{
+	log.debug(signed_data.rawTransaction);
+	await web3.eth.sendSignedTransaction(signed_data.rawTransaction).on('transactionHash',(hash)=>{
+		log.debug(hash);
+	}).on('receipt',(receipt)=>{
 		log.debug(receipt);
 		return Promise.resolve();
 	})
