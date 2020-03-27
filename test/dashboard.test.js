@@ -26,13 +26,17 @@ if(TEST_CONFIG.current_target == "electron"){
 				
 			});
 
+			after(async function(){
+				await click("#header-signin-out");
+			})
+
 			it("Dashboard-Delegate button should be disabled if current balance is 0", async function(){
 				try{
-					let balance = await get_current_state(".balance");
-					log.debug(balance.toString());
-					expect(balance.toString()).to.equal("0");
+					let balance = await get_current_state(".balance.toString()");
+					log.debug(balance);
+					expect(balance).to.equal("0");
 					let Delegate_btn = await find_ele("#dashboard-delegate");
-					expect(await Delegete_btn.getAttribute("class")).to.have("disable");
+					expect(await Delegate_btn.getAttribute("class")).to.have.string("disable");
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -42,11 +46,11 @@ if(TEST_CONFIG.current_target == "electron"){
 
 			it("Dashboard-Withdraw button should be disabled if current reward is 0", async function(){
 				try{
-					let rewards = await get_current_state(".my_total_cur_rewards");
-					if(rewards.isGreaterThan(0)){
-						expect(await (await find_ele("#dashboard-withdraw")).getAttribute("class")).to.have("disable");
+					let rewards = await get_current_state(".my_total_cur_rewards.toString()");
+					if(rewards=="0"){
+						expect(await (await find_ele("#dashboard-withdraw")).getAttribute("class")).to.have.string("disable");
 					}else{
-						expect(await (await find_ele("#dashboard-withdraw")).getAttribute("class")).not.to.have("disable");
+						expect(await (await find_ele("#dashboard-withdraw")).getAttribute("class")).not.to.have.string("disable");
 					}	
 				}catch(e){
 					log.error(e.message);
@@ -63,7 +67,7 @@ if(TEST_CONFIG.current_target == "electron"){
 			before(async function(){
 				let balance = await checkBalance(MAIN_TEST_ACCOUNT.address);
 				log.debug("Balance: "+balance);
-				if(balance == 0) {
+				if(balance > 0) {
 					await goto_random_place();
 					await click("#header-signin-out");
 					await filling_signin_modal("private_key",'pool', MAIN_TEST_ACCOUNT.pk);
@@ -89,7 +93,7 @@ if(TEST_CONFIG.current_target == "electron"){
 					log.debug(current_url);
 
 					expect(await find_ele("#staking-table-pools")).not.to.be.null;
-					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("pools");
+					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("Pools");
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");

@@ -165,7 +165,7 @@ if(TEST_CONFIG.current_target == "electron"){
 
 					expect(await find_ele("#staking-table-pools")).not.to.be.null;
 					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("Pools");
-				}catch(e){s
+				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
 			        return Promise.reject(e);
