@@ -28,6 +28,19 @@ global.get_clipboard_content = ()=> new Promise((res,rej)=>{
 });
 
 
+global.record_action = function(action,from,txhash,value,receiver){
+    if(!global.RECORDER) global.RECORDER = [];
+    RECORDER.push({action:action,from:from,txhash:txhash,value:value,receiver:receiver});
+}
+
+global.check_records = async function(){
+    let _all_promises = [];
+    RECORDER.forEach((one_rec,index)=>{
+        _all_promises.push(getReceipt(one_rec.txhash));
+    });
+    let ress = await Promise.all(_all_promises);
+}
+
 global.ele_can_click = async function(selector, parent = driver){
     let ele = null
     try {

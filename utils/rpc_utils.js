@@ -16,3 +16,7 @@ exports.getTestCoin = async function(receiver, amount){
 	})
 }
 
+exports.getReceipt = function(txhash){
+	return web3.eth.getTransactionReceipt(tx)
+}
+

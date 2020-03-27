@@ -306,6 +306,75 @@ global.click_console_top_full_amount = async function() {
     await click('console-top-full-amount')
 }
 
+global.goto_random_place=async function goto_random_place(){
+    let random_method = get_num_from_0_to_less_n(5);
+    let account_status = await get_current_state(".account");
+    log.debug(random_method);
+    log.debug(account_status);
+    switch(random_method){
+        case 0:
+            if(account_status.mode == "pool"){
+                await goto_pool();
+                break;
+            }
+        case 1:
+            
+            await goto_staking();
+            await goto_pool_detail();
+            break;
+            
+        case 2:
+            await goto_account();
+            break;
+        case 3:
+            await goto_staking();
+            break;
+        default:
+            await goto_dashboard();
+    }
+}
+
+global.signout_from_random_place=async function signout_from_random_place(){
+    let mode = await get_current_state(".account.mode");
+    let random_method = get_num_from_0_to_less_n(7);
+    switch(random_method){
+        case 0:
+            if(mode=="pool") {
+                await signout_from_pool();
+                break;
+            }
+        case 1:
+            await signout_from_staking();
+            break;
+        case 2:// when visitor log in on pool manangement mode, they can sign out from pool section;
+            await signout_from_account();
+            break;
+        case 3:
+            if(mode=="pool") {
+                await goto_pool();
+                await click('#header-signin-out');
+                break;
+            }
+        case 4:
+            await goto_dashboard();
+            await click('#header-signin-out');
+            break;
+        case 5:
+            await goto_account();
+            await click('#header-signin-out');
+            break;
+        case 6:
+            await goto_staking();
+            await click('#header-signin-out');
+            break;
+        default:
+            await goto_pool_detail();
+            await click('#header-signin-out');
+    }
+}
+
+
+
 
 async function signin_private_key(){
     await signin_with_header_button('private_key', TEST_CONFIG.test_accounts.private_key.pk)
