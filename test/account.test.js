@@ -22,7 +22,7 @@ if(TEST_CONFIG.current_target == "electron"){
 			})
 
 			it("Click copy button copy current address into clipboard",async function(){
-				await click("#account-copy-refresh-clear-button-group image.copy");
+				await click("#account-copy-refresh-clear-button-group img.copy");
 				expect(await get_clipboard_content()).to.equal(MAIN_TEST_ACCOUNT.address);
 			})
 		})
@@ -48,12 +48,13 @@ if(TEST_CONFIG.current_target == "electron"){
 
 			it("Send button should be disabled if current balance is 0", async function(){
 				try{	
-					let balance = await get_current_state(".balance");
-					log.debug(balance.toString());
+					let balance = await get_current_state(".balance.toString()");
+					log.debug("check state balance");
+					log.debug(balance);
 					expect(balance.toString()).to.equal("0");
-					let send_btn = (await find_eles(".balance button"))[0];
+					let send_btn = (await find_eles(".balance .button"))[0];
 					expect(await send_btn.getText()).to.equal("Send");
-					expect(await send_btn.getAttribute("class")).to.have("disable");
+					expect(await send_btn.getAttribute("class")).to.have.string("disable");
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -62,11 +63,11 @@ if(TEST_CONFIG.current_target == "electron"){
 			});
 			it("Delegate button should be disabled if current balance is 0", async function(){
 				try{
-					let balance = await get_current_state(".balance");
+					let balance = await get_current_state(".balance.toString()");
 					log.debug(balance.toString());
 					expect(balance.toString()).to.equal("0");
 					let Delegate_btn = await find_ele("#account-delegate");
-					expect(await Delegete_btn.getAttribute("class")).to.have("disable");
+					expect(await Delegate_btn.getAttribute("class")).to.have.string("disable");
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
@@ -76,11 +77,12 @@ if(TEST_CONFIG.current_target == "electron"){
 			it("Un-Delegate button should be disabled if current staking is 0",async function(){
 
 				try{
-					let stake = await get_current_state(".my_total_cur_stake");
-					if(stake.isGreaterThan(0)){
-						expect(await (await find_ele("#account-undelegate")).getAttribute("class")).to.have("disable");
+					let stake = await get_current_state(".my_total_cur_stake.toString()");
+					log.info(stake);
+					if(stake=="0"){
+						expect(await (await find_ele("#account-undelegate")).getAttribute("class")).to.have.string("disable");
 					}else{
-						expect(await (await find_ele("#account-undelegate")).getAttribute("class")).not.to.have("disable");
+						expect(await (await find_ele("#account-undelegate")).getAttribute("class")).not.to.have.string("disable");
 					}	
 				}catch(e){
 					log.error(e.message);
@@ -91,11 +93,12 @@ if(TEST_CONFIG.current_target == "electron"){
 
 			it("Withdraw button should be disabled if current reward is 0", async function(){
 				try{
-					let rewards = await get_current_state(".my_total_cur_rewards");
-					if(rewards.isGreaterThan(0)){
-						expect(await (await find_ele("#account-withdraw")).getAttribute("class")).to.have("disable");
+					let rewards = await get_current_state(".my_total_cur_rewards.toString()");
+					log.info(rewards);
+					if(rewards=="0"){
+						expect(await (await find_ele("#account-withdraw")).getAttribute("class")).to.have.string("disable");
 					}else{
-						expect(await (await find_ele("#account-withdraw")).getAttribute("class")).not.to.have("disable");
+						expect(await (await find_ele("#account-withdraw")).getAttribute("class")).not.to.have.string("disable");
 					}	
 				}catch(e){
 					log.error(e.message);
@@ -112,11 +115,19 @@ if(TEST_CONFIG.current_target == "electron"){
 			before(async function(){
 				let balance = await checkBalance(MAIN_TEST_ACCOUNT.address);
 				log.debug("Balance: "+balance);
-				if(balance == 0) {
+				if(balance > 0) {
 					await goto_random_place();
 					await click("#header-signin-out");
 					await filling_signin_modal("private_key",'pool', MAIN_TEST_ACCOUNT.pk);
 					await goto_account();
+					let _balance = await get_current_state(".balance.toString()");
+					log.debug("check state balance");
+					log.debug(_balance);
+					let rewards = await get_current_state(".my_total_cur_rewards.toString()");
+					log.info("rewards: "+rewards);
+					let stake = await get_current_state(".my_total_cur_stake.toString()");
+					log.info("current stake: " +stake);
+
 				}else{
 					throw new Error(`This address ${MAIN_TEST_ACCOUNT.address} has balance: ${balance} AION.`);
 				}
@@ -132,7 +143,7 @@ if(TEST_CONFIG.current_target == "electron"){
 
 			it("Send button should navigate to staking > transfter section ", async function(){
 				try{
-					let send_btn = (await find_eles(".balance button"))[0];
+					let send_btn = (await find_eles(".balance .button"))[0];
 					await send_btn.click();
 					let current_url = await driver.getCurrentUrl();
 					log.debug(current_url);
@@ -153,8 +164,8 @@ if(TEST_CONFIG.current_target == "electron"){
 					log.debug(current_url);
 
 					expect(await find_ele("#staking-table-pools")).not.to.be.null;
-					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("pools");
-				}catch(e){
+					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("Pools");
+				}catch(e){s
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");
 			        return Promise.reject(e);
@@ -169,7 +180,7 @@ if(TEST_CONFIG.current_target == "electron"){
 					log.debug(current_url);
 
 					expect(await find_ele("#staking-table-delegations")).not.to.be.null;
-					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("my delegations");
+					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("My Delegations");
 				}catch(e){
 					log.error(e.message);
 			        await screenshot(this.test.title.substring(0,10)+" error");

@@ -1,9 +1,12 @@
 var Web3 = require("aion-web3");
-const web3 = new Web3(new Web3.providers.HttpProvider(TEST_CONFIG.relay_url));
+const web3 = new Web3(new Web3.providers.HttpProvider(TEST_CONFIG.rpc_url));
 const account_with_balance = web3.eth.accounts.privateKeyToAccount(TEST_CONFIG.test_accounts.private_key.pk);
 
 exports.checkBalance = async function(addr){
-	return (await web3.eth.getBalance(addr,"latest"))/1000000000000000000;
+	let balance = await web3.eth.getBalance(addr,"latest");
+	log.debug("get balance:")
+	log.debug(balance);
+	return balance/1000000000000000000;
 }
 
 exports.getTestCoin = async function(receiver, amount){
