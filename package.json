@@ -8,7 +8,8 @@
     "aion-web3": "^1.2.7-beta.0",
     "chai": "^4.2.0",
     "mocha": "^7.0.0",
-    "selenium-webdriver": "^4.0.0-alpha.7"
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "sendkeys-js": "0.0.4"
   },
   "name": "qa-selenium",
   "description": "1. npm i -g selenium-webdriver 2. download chromedriver for your browser and add it to system path 3. start staking interface 4. node test",

@@ -1,3 +1,4 @@
+const { By } = require("selenium-webdriver")
 global.get_table_len = async function(data_name) {
     let count = 5
     let pool_len = await executeScript(`return getState()['${data_name}'].length`)
@@ -17,7 +18,20 @@ global.click_table_row = async function (table, seq, call_back = async () => 0) 
     await call_back()
 }
 
+global.click_table_row_by_pool = async function(table,pool_address){
+    let selector = `${table} tbody div[title='${pool_address}']`
+    log.info('click table row:', selector);
+    await click(selector)
+}
+global.click_table_single_button_by_pool = async function (table,pool_address, button){
+    let table_ele  = await find_ele(`${table} tbody div[title='${pool_address}']`)
+    let selector = `${button}`
+    log.info('click table button:'+selector);
+    await (await table_ele.findElement(By.xpath(`../../td[@class="${table.substring(1,table.length)}-td-buttons"]/div[contains(@class,"${button}")]`))).click()
+}
+
 global.click_table_single_button = async function(table, seq, button) {
+    await driver.sleep(TEST_CONFIG.wait_time);
     log.info('click single table button:', `${table} tbody>tr:nth-child(${seq}) ${button}`)
     await click(`${table} tbody>tr:nth-child(${seq}) ${button}`)
 }

@@ -60,6 +60,7 @@ global.find_ele = async function(selector, parent = driver) {
 }
 
 global.find_eles = async function(selector, parent = driver) {
+    log.info(`finding elements ${ selector }`)
     return await parent.findElements(By.css(selector));
 }
 
@@ -74,6 +75,9 @@ global.click = async function(selector, parent = driver,time = TEST_CONFIG.wait_
     }
 }
 
+global.wait_for_ele =  function(selector){
+    return driver.wait(until.elementLocated(By.css(selector)), TEST_CONFIG.long_timeout);
+}
 
 global.input = async function(selector, key = '', time = TEST_CONFIG.wait_time) {
     await (await find_ele(selector)).clear();

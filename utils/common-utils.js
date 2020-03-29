@@ -14,10 +14,16 @@ global.close_modal = async function(){
     log.info("Close the modal");
     let close_cross_imgs = await find_eles("svg[id$='-close']");
     log.debug("close image elements on current page"+close_cross_imgs.length);
-    let close_btn_onScreen = await close_cross_imgs.filter(async(elem)=>{ 
-                    return await elem.isDisplayed();
-            })[0];
-    return close_btn_onScreen.click();
+
+    let close_btn_onScreen = [];
+    for(let i = 0; i < close_cross_imgs.length;i++){
+        if(await close_cross_imgs[i].isDisplayed()){
+            close_btn_onScreen.push(close_cross_imgs[i]);
+        }
+    }
+     
+    log.info(`find ${close_btn_onScreen.length} close btn(s) on screen`)
+    return close_btn_onScreen[0].click();
 }
 
 global.click_back_img = async function(){
@@ -257,6 +263,7 @@ global.get_delegations_len = async function() {
     log.info('get data delegations len:', len)
     return len
 }
+
 
 
 global.close_transaction_success_modal = async  function(count = 5){
