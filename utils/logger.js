@@ -64,6 +64,7 @@ class Logger{
     }
   }
   checked(verifyInfo){
+    console.log(this.filename);
     if(this.level >= LEVEL_VALUE.checked){
       if(this.enableConsoleLog){
         console.log("\x1b[32m%s\t%s\x1b[0m","[CHECKED]",verifyInfo);

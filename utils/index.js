@@ -110,6 +110,11 @@ global.screenshot = async function(fileName, dirName = log.log_dir()){
 }
 
 
+global.formatNumber = function(number){
+    return number.toLocaleString(undefined, {minimumFractionDigits: 5, maximumFractionDigits: 5})
+}
+
+
 global.start = async function(driverName = "chrome"){
     if(driverName == "chrome"){
         if (process.env.chromedriver) {

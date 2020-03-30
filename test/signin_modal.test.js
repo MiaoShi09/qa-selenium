@@ -144,7 +144,7 @@ describe("Signin modal Test",function(){
 			try{
 				let account_status = await get_current_state(".account");
 				if(account_status.type!="" || account_status.type !="visitor"){
-					await signout_from_random_place(account_status.type);
+					await signout_from_random_place();
 				}
 				await driver.sleep(TEST_CONFIG.wait_time);
 				await goto_random_place();
@@ -155,7 +155,6 @@ describe("Signin modal Test",function(){
 			    return Promise.reject(e);
 			}
 		});
-
 
 
 	
@@ -205,7 +204,7 @@ async function verify_signin_success(addr,mode = "standard"){
 				log.checked('verified signin success on Staking section');
 				break;
 			case "pool":
-				expect(await find_ele(`input[value^="${addr}"]`,(await find_ele("#pool-copy-refresh-clear-button-group")))).not.to.be.null;
+				expect(await find_ele(`input[value^="${addr}"]`,(await find_ele("#pool-management-copy-refresh-clear-button-group")))).not.to.be.null;
 				log.checked('verified signin success on Pool section');
 				break;
 			default:

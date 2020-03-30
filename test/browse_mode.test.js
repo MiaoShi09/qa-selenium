@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 require("../utils/common-utils");
-
+const {By} = require("selenium-webdriver");
 log.updateLogFile("unsign.test");
 
 const TEST_ACCOUNT = TEST_CONFIG.test_accounts.nmenomic_phrase.address;
@@ -28,6 +28,14 @@ describe("Browse Mode Test",function(){
 				account_state = await get_current_state(".account");
 			}
 
+		});
+		afterEach(async function(){
+			try{
+				await close_modal();
+				log.info("close any modal on the screen")
+			}catch(e){
+				log.info("NO modal on screen")
+			}
 		})
 
 		it("Pool Management section is hidden when sign in standard mode",async function(){
@@ -154,6 +162,15 @@ describe("Browse Mode Test",function(){
 
 		});
 
+		afterEach(async function(){
+			try{
+				await close_modal();
+				log.info("close any modal on the screen")
+			}catch(e){
+				log.info("NO modal on screen")
+			}
+		})
+
 		it("Pool Management section is NOT hidden when sign in pool mode",async function(){
 			try{
 				expect(await (await find_ele("#sidebar-menu-pool-management")).isDisplayed()).to.be.true;
@@ -188,6 +205,14 @@ describe("Browse Mode Test",function(){
 			}
 
 		});
+		afterEach(async function(){
+			try{
+				await close_modal();
+				log.info("close any modal on the screen")
+			}catch(e){
+				log.info("NO modal on screen")
+			}
+		})
 
 		it("Sign in an INVALID aion address",async function(){
 			try{
@@ -195,8 +220,9 @@ describe("Browse Mode Test",function(){
 				if(await (await find_ele("#modal_signin")).isDisplayed()){
 					for(let i = 0; i < INVALID_AION_ADDR.length; i++){
 						await input('#modal-signin-input-browse-address', INVALID_AION_ADDR[i]);
-						await click("#modal-signin-browse-button")
-						expect(await (await find_eles(".message-container .message-item"))[0].getText()).to.equal("Invalid OAN address");
+						await click("#modal-signin-browse-button");
+						let all_messages = await find_eles(".message-container .message-item");
+						expect(await all_messages[all_messages.length-1].getText()).to.equal("Invalid OAN address");
 						log.checked("error message for invalid address "+INVALID_AION_ADDR[i]+" is showed as expected.")
 					}
 				}

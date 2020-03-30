@@ -8,7 +8,7 @@ global.get_table_len = async function(data_name) {
         await driver.sleep(1000)
     }
     log.info(`get data ${data_name}  length:`, pool_len)
-    return pool_len
+    return pool_len;
 }
 
 

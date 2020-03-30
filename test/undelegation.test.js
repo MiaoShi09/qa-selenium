@@ -39,23 +39,28 @@ describe("Undelegate test", function(){
 		}
 		await goto_staking();
 	})
+
+	after(async function(){
+		if(await get_current_state(".account.type==''")){
+			await click("#header-signin-out");
+		}
+	})
 	it('1-staking.my delegation -> console', async function(){
 		try{
 			await click("#staking-tab-delegations");
-			let my_delegation = await get_delegations_details();
+			let my_delegation = await get_non_zero_delegation();
 			if(my_delegation.length == 0) throw new Error("Current account does not have any delegation; unable to perform undelegation.")
 			let ri = get_num_from_0_to_less_n(my_delegation.length);
 			log.debug(`select item ${ri} which should be ${my_delegation[ri].pool}`);
 			await screenshot("on_select_pool_section");
 			await click_table_single_button_by_pool("#staking-table-delegations",pool_map[my_delegation[ri].pool].name,"undelegate");
 
-			expect(await find_ele(".console-top #staking-console-top-operation-list .common-select-select")).not.to.null;
 			expect(await (await find_ele(".console-top #staking-console-top-operation-list .common-select-select")).getText()).to.equal("undelegate");
 			await undelegate(my_delegation[ri],"full");
 			expect( await(await find_ele("#modal-transaction-confirm")).isDisplayed()).not.to.be.null;
 			await close_modal();
 			await click("#staking-console-bottom-button.button");
-			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(my_delegation[ri].stake.toFixed(5));
+			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(my_delegation[ri].stake));
 			await click("#modal-transaction-confirm-button");
 			await wait_for_ele("#modal-transaction-success");
 			await driver.sleep(TEST_CONFIG.wait_time);
@@ -75,7 +80,7 @@ describe("Undelegate test", function(){
 	it('2-staking.my delegation -> pool detail -> console', async function(){
 		try{
 			await click("#staking-tab-delegations");
-			let my_delegation = await get_delegations_details();
+			let my_delegation = await get_non_zero_delegation ();
 			if(my_delegation.length == 0) throw new Error("Current account does not have any delegation; unable to perform undelegation.")
 			let ri = get_num_from_0_to_less_n(my_delegation.length)
 			await click_table_row_by_pool("#staking-table-delegations",pool_map[my_delegation[ri].pool].name);
@@ -87,7 +92,7 @@ describe("Undelegate test", function(){
 			expect( await find_ele("#modal-transaction-confirm")).not.to.be.null;
 			await close_modal();
 			await click("#staking-console-bottom-button.button");
-			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(undelegate_amount.toFixed(5));
+			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(undelegate_amount));
 			await click("#modal-transaction-confirm-button");
 			await wait_for_ele("#modal-transaction-success");
 			await driver.sleep(TEST_CONFIG.wait_time);
@@ -108,8 +113,9 @@ describe("Undelegate test", function(){
 			if(ri < 0) throw new Error("Unable to find a pool that is not delegated by this account");
 			let pools = await get_pools();
 			await click_table_row('#staking-table-pools', ri + 1);
+			await driver.sleep(TEST_CONFIG.wait_time);
 			expect(await (await find_ele("#pool-detail .top p")).getText()).to.equal(pools[ri].address);
-			expect(await (await find_ele("#pool-detail-undelegate")).getAttribute()).to.have.string("disable");
+			expect(await (await find_ele("#pool-detail-undelegate.button")).getAttribute("class")).to.have.string("disable");
 		}catch(e){
 			log.error(e.message);
             await screenshot(this.test.title.substring(0,15)+" error");

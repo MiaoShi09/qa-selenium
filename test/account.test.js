@@ -11,6 +11,7 @@ if(TEST_CONFIG.current_target == "electron"){
 	describe("account section test",function(){
 		describe("Common cases",function(){
 			before(async function(){
+
 				await goto_random_place();
 				await click("#header-signin-out");
 				await filling_signin_modal("private_key",'pool', MAIN_TEST_ACCOUNT.pk);	
