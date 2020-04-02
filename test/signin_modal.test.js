@@ -151,7 +151,7 @@ describe("Signin modal Test",function(){
 				await click("#header-signin-out");
 			}catch(e){
 				log.error(e.message);
-			    await screenshot(this.currentTest.substring(0,10)+" error");
+			    await screenshot(this.currentTest+" error");
 			    return Promise.reject(e);
 			}
 		});

@@ -44,10 +44,11 @@ global.check_records = async function(){
 global.ele_can_click = async function(selector, parent = driver){
     let ele = null
     try {
+        await driver.executeScript(`document.querySelector("${selector}").scrollIntoViewIfNeeded()`);
         ele = await find_ele(selector,parent)
     }catch (e) {
         log.error(e);
-        log.error(`finding element ${ selector }`);
+        log.error(`unable to find element ${ selector }`);
         throw e;
     }
     return (ele && await ele.isDisplayed() && await ele.isEnabled()) ? ele : null

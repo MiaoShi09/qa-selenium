@@ -6,10 +6,10 @@ log.updateLogFile("navigation.test");
 
 
 const pool_detail_suffixs = {
-	exist:['0xa0ce1062d72bae67bce48509e1b196753d2a90655be1402c0069ecc0cd47210e'], 
+	exist:['0xa05649144074f25a35a9a8734a52cbd91e4939a3edd31f370b59ecea7575090f'], 
 	non_exist:['','dadfklahfl']
 };
-const table_names = ['', 'pools', 'finalizations', 'delegations', 'Rewards%20&%20Auto-delegation','refgesrfgergf'];
+const table_names = ['pools', 'finalizations', 'delegations', 'Rewards%20&%20Auto-delegation','refgesrfgergf',''];
 	
 const staking_content = {
 	finalizations: "#staking-table-finalizations",
@@ -22,7 +22,10 @@ const dashboard_help_suffixs = {
 	exist:['Staking%20Actions', 'Staking%20Pools', 'Account%20Page'],
 	non_exist:[ 'regfersgse','']}
 
-const menu_items = ['dashboard','account','staking','pool-management']
+const menu_items = ['dashboard','account','staking/pools','pool-management'];
+
+const url_404 = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/404";
+const default_level_one_url =  TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/dashboard";
 
 
 describe("navigate to different directly by address", function(){
@@ -43,8 +46,9 @@ describe("navigate to different directly by address", function(){
 
 		for(let key in dashboard_help_suffixs){
 			
-			dashboard_help_suffixs[key].forEach((help_page)=>{
+			dashboard_help_suffixs[key].forEach((help_page,index)=>{
 				it("direly go to help page "+help_page, async function(){
+
 					try{
 						await skip_to_help_page(help_page);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/dashboard/help/${help_page}`;
@@ -54,7 +58,8 @@ describe("navigate to different directly by address", function(){
 						if(key === 'exist'){
 							expect(current_url).to.equal(url);
 						}else{
-							expect(current_url).not.to.equal(url);
+							if(index < 1) expect(current_url).to.equal(url_404);
+							else expect(current_url).to.equal(default_level_one_url);
 						}
 					}catch(e){
 						log.error(e.message);
@@ -66,17 +71,21 @@ describe("navigate to different directly by address", function(){
 		}
 
 		for(let key in pool_detail_suffixs){
-			pool_detail_suffixs[key].forEach((pool_addr)=>{
+			pool_detail_suffixs[key].forEach((pool_addr,index)=>{
 				it("direly go to pool page "+pool_addr, async function(){
 					try{
 						await skip_to_pool_detail(pool_addr);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/pool/${pool_addr}`;
+
 						let current_url = await driver.getCurrentUrl();
 						log.debug(`Current url is ${current_url} and it should be ${key}.`);
 						if(key === 'exist'){
 							expect(current_url).to.equal(url);
 						}else{
-							expect(current_url).not.to.equal(url);
+							if(index > 0)
+								expect(current_url).to.equal(url_404);
+							else
+								expect(current_url).to.equal(default_level_one_url);
 						}
 					}catch(e){
 						log.error(e.message);
@@ -114,7 +123,8 @@ describe("navigate to different directly by address", function(){
 		it("users should NOT be able to access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
-			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
+			log.info(await driver.getCurrentUrl());
+			expect(await driver.getCurrentUrl()).to.equal(default_level_one_url);
 		});
 
 
@@ -153,7 +163,7 @@ describe("navigate to different directly by address", function(){
 		it("users should NOT be able to  access pool section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
-			expect(await driver.getCurrentUrl()).not.to.equal(expected_url);
+			expect(await driver.getCurrentUrl()).to.equal(default_level_one_url);
 		});
 
 

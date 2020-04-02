@@ -86,10 +86,10 @@ global.filling_signin_modal = async function(type='private_key',mode = "standard
 global.signout_from_staking = async function() {
     log.info('#signout from staking')
     await click('#sidebar-menu-staking')
-    let ele = ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
+    let ele = await ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
     let count = 5
     while(!ele) {
-        ele = ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
+        ele = await ele_can_click('#staking-copy-refresh-clear-button-group .clear-address')
         count--
         await driver.sleep(TEST_CONFIG.wait_time)
     }
@@ -99,13 +99,13 @@ global.signout_from_staking = async function() {
 global.signout_from_account = async function() {
     log.info('signout from account')
     await click('#sidebar-menu-account')
-    const ele = ele_can_click('#account-copy-refresh-clear-button-group .clear-address')
+    const ele = await ele_can_click('#account-copy-refresh-clear-button-group .clear-address')
     if(ele) await click('#account-copy-refresh-clear-button-group .clear-address')
 }
 
 global.signout_from_pool = async function() {
     log.info("signout from pool");
-    goto_pool();
+    await goto_pool();
     await click(".clear-address");
 }
 
@@ -262,7 +262,7 @@ global.get_delegations_len = async function() {
         count--
         await driver.sleep(2000)
     }
-    log.info('get data delegations len:', len)
+    log.info('get data delegations len:'+ len)
     return len
 }
 
@@ -274,7 +274,7 @@ global.close_transaction_success_modal = async  function(count = 5){
     await close_staking_warning_modal()
     await close_transation_error()
     const ele = await ele_can_click('modal-transaction-success-back')
-    log.info('try close transaction success modal:', !!ele)
+    log.info('try close transaction success modal:'+ !!ele)
     if(!ele) {
         return await close_transaction_success_modal(count - 1)
     }
