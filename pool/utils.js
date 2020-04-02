@@ -1,9 +1,9 @@
 global.get_delegations_details = function(){
-    return driver.executeScript("return Object.entries(getState().delegations).map(o=>{return {pool:o[0],stake:o[1].stake.toNumber()};})");
+    return driver.executeScript("return Object.entries(getState().delegations).map(o=>{return {pool:o[0],stake:{number:o[1].stake.toNumber(),localeString:o[1].stake.toLocaleString()}};})");
 }
 
 global.get_rewards_details =function(){
-    return driver.executeScript("return Object.entries(getState().delegations).map(o=>{return {pool:o[0],rewards:o[1].rewards.toNumber()};})");
+    return driver.executeScript("return Object.entries(getState().delegations).map(o=>{return {pool:o[0],rewards:{number:o[1].rewards.toNumber(),localeString:o[1].rewards.toLocaleString()}};})");
 }
 
 global.get_auto_delegate_details =function(){
@@ -32,5 +32,7 @@ global.get_pools_map =async  function(){
 }
 
 global.get_non_zero_delegation = async function(){
-	return (await get_delegations_details()).filter(o=>o.stake>0);
+	let delegations = (await get_delegations_details()).filter(o=>o.stake.number>0);
+	console.log(delegations);
+	return delegations;
 }

@@ -96,7 +96,7 @@ describe("Transfer test", function(){
 			await click_table_row_by_pool("#staking-table-delegations",pool_map[my_delegation[ri].pool].name);
 			expect(await (await find_ele("#pool-detail .top p")).getText()).to.equal(my_delegation[ri].pool);
 			await click("#pool-detail-undelegate");
-			let transfer_amount= my_delegation[ri].stake*Math.random();
+			let transfer_amount= my_delegation[ri].stake.number*Math.random();
 			await click("#staking-console-top-operation-list .common-select-select");
 			await driver.sleep(TEST_CONFIG.wait_time);
 			let actions = await find_eles("#staking-console-top-operation-list .common-select-list li")
@@ -157,7 +157,7 @@ async function transfer(fromPool_data,toPool_address,amount = "full", reselect =
 	if(amount == "full"){
 		await click("#console-top-full-amount");
 		log.debug(fromPool_data.stake.toString());
-		expect(await (await find_ele("input#staking-console-top-input")).getAttribute("value")).to.equal(fromPool_data.stake.toString());
+		expect(await (await find_ele("input#staking-console-top-input")).getAttribute("value")).to.equal(fromPool_data.stake.number.toString());
 	}else{
 		await input("#staking-console-top-input",amount.toString());
 	}

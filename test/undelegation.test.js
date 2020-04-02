@@ -60,13 +60,13 @@ describe("Undelegate test", function(){
 			expect( await(await find_ele("#modal-transaction-confirm")).isDisplayed()).not.to.be.null;
 			await close_modal();
 			await click("#staking-console-bottom-button.button");
-			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(my_delegation[ri].stake));
+			expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(my_delegation[ri].stake.number));
 			await click("#modal-transaction-confirm-button");
 			await wait_for_ele("#modal-transaction-success");
 			await driver.sleep(TEST_CONFIG.wait_time);
 			await click("#modal-transaction-success-copy");
 		    let txhash = await get_clipboard_content();
-		    record_action("undelegate",_test_account,txhash,my_delegation[ri].skate,my_delegation[ri].pool);
+		    record_action("undelegate",_test_account,txhash,my_delegation[ri].skate.number,my_delegation[ri].pool);
 		    let btn = await find_element_n_times('#modal-transaction-success-back');
 		    await btn.click(); 
 		}catch(e){
@@ -86,7 +86,7 @@ describe("Undelegate test", function(){
 			await click_table_row_by_pool("#staking-table-delegations",pool_map[my_delegation[ri].pool].name);
 			expect(await (await find_ele("#pool-detail .top p")).getText()).to.equal(my_delegation[ri].pool);
 			await click("#pool-detail-undelegate");
-			let undelegate_amount= my_delegation[ri].stake*Math.random();
+			let undelegate_amount= my_delegation[ri].stake.number*Math.random();
 			await undelegate(my_delegation[ri],undelegate_amount);
 
 			expect( await find_ele("#modal-transaction-confirm")).not.to.be.null;
@@ -133,7 +133,7 @@ describe("Undelegate test", function(){
 
 			expect(await find_ele(".console-top #staking-console-top-operation-list .common-select-select")).not.to.null;
 			expect(await (await find_ele(".console-top #staking-console-top-operation-list .common-select-select")).getText()).to.equal("undelegate");
-			let undelegate_amount= my_delegation[ri].stake*(1+Math.random());
+			let undelegate_amount= my_delegation[ri].stake.number*(1+Math.random());
 			await undelegate(my_delegation[ri],undelegate_amount,true);
 			expect(await (await find_ele("#staking-console-bottom-button.button")).getAttribute("class")).to.have.string("disable");
 		
@@ -151,7 +151,7 @@ describe("Undelegate test", function(){
 async function undelegate(fromPool_data,amount = "full", reselect = false){
 	if(amount == "full"){
 		await click("#console-top-full-amount");
-		expect(await (await find_ele("#staking-console-top-input")).getAttribute("value")).to.equal(fromPool_data.stake.toString());
+		expect(await (await find_ele("#staking-console-top-input")).getAttribute("value")).to.equal(fromPool_data.stake.number.toString());
 	}else{
 		input("#staking-console-top-input",amount.toString());
 	}
