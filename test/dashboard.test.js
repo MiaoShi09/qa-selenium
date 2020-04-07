@@ -11,7 +11,7 @@ const MAIN_TEST_ACCOUNT = TEST_CONFIG.test_accounts.private_key;
 if(TEST_CONFIG.current_target == "electron"){
 	describe("Dashboard section test",function(){
 
-		describe("signin with an account which does not have balance",function(){
+		describe("Dashboard-signin_no_balance",function(){
 			before(async function(){
 				let balance = await checkBalance(NO_BALANCE_ACCOUNT.address);
 				log.debug("Balance: "+balance);
@@ -30,7 +30,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				await click("#header-signin-out");
 			})
 
-			it("Dashboard-Delegate button should be disabled if current balance is 0", async function(){
+			it("Dashboard_no_bal-Delegate_btn_disable", async function(){
+				log.updateTest(this.test);
 				try{
 					let balance = await get_current_state(".balance.toString()");
 					log.debug(balance);
@@ -44,7 +45,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				}
 			});
 
-			it("Dashboard-Withdraw button should be disabled if current reward is 0", async function(){
+			it("Dashboard_no_reward-Withdraw_btn_disable", async function(){
+				log.updateTest(this.test);
 				try{
 					let rewards = await get_current_state(".my_total_cur_rewards.toString()");
 					if(rewards=="0"){
@@ -63,7 +65,7 @@ if(TEST_CONFIG.current_target == "electron"){
 
 		});
 
-		describe("signin with an account which have balance",function(){
+		describe("Dashboard-signin_with_balance",function(){
 			before(async function(){
 				let balance = await checkBalance(MAIN_TEST_ACCOUNT.address);
 				log.debug("Balance: "+balance);
@@ -85,7 +87,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				await goto_dashboard();
 			})
 
-			it("Delegate button should navigate to staking pools", async function(){
+			it("Dashboard_no_bal-Delegate_navigate_to_staking_pools", async function(){
+				log.updateTest(this.test);
 				try{
 					let Delegate_btn = await find_ele("#dashboard-delegate");
 					await Delegate_btn.click();
@@ -101,7 +104,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				}
 			});
 
-			it("Withdraw button should navigate to staking rewards", async function(){
+			it("Dashboard_with_reward-Withdraw_navigate_to_staking_rewards", async function(){
+				log.updateTest(this.test);
 				try{
 					let undelegation_btn = await find_ele("#dashboard-withdraw");
 					await undelegation_btn.click();

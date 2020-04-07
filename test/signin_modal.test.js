@@ -16,6 +16,7 @@ describe("Signin modal Test",function(){
 
 	describe("Common Test Cases",function(){
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			let account_status = await get_current_state(".account");
 			if(account_status.type!="" && account_status.type!="visitor"){
 				await signout_from_random_place(account_status.type);
@@ -26,7 +27,7 @@ describe("Signin modal Test",function(){
 			await click("#header-signin-out");
 		});
 
-		it("Signin with ledger when ledger is NOT connected", async function(){
+		it("Common_signin-ledger_NOT_connected", async function(){
 			try{
 
 				await click("#modal-signin-ledger-button");
@@ -41,14 +42,14 @@ describe("Signin modal Test",function(){
 
 			}catch(e){
 				log.error(e.message);
-		        await screenshot(this.test.title.substring(0,10)+" error");
+		        await screenshot(this.test.title+".error");
 		        return Promise.reject(e);
 			}
 		});
 
 
 		if(TEST_CONFIG.current_target == "electron"){
-			it("Signin with INVALID private key", async function(){
+			it("Common_signin-INVALID_private_key", async function(){
 				try{
 					await filling_signin_modal("private_key",'standard',TEST_CONFIG.test_accounts.private_key.pk.substring(0,128));
 					log.debug(await (await find_ele("#modal-signin-private-key p.err")).getText() + "is the error message");
@@ -63,7 +64,7 @@ describe("Signin modal Test",function(){
 			});
 
 
-			it("Signin with INVALID nmenomic phrase",async function(){
+			it("Common_signin-INVALID_nmenomic_phrase",async function(){
 				try{
 					for(let i = 0; i < INVALID_NM_PHRASE.length; i++){
 						await filling_signin_modal("phrase",'standard',INVALID_NM_PHRASE[i]);
@@ -87,6 +88,7 @@ describe("Signin modal Test",function(){
 
 	describe("Sign in standard mode",function(){
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			let account_status = await get_current_state(".account");
 			if(account_status.type!="" && account_status.type!="visitor"){
 				await signout_from_random_place(account_status.type);
@@ -99,26 +101,26 @@ describe("Signin modal Test",function(){
 
 	
 		if(TEST_CONFIG.current_target == "electron"){
-			it("standard mode: Signin with private key", async function(){
+			it("Std_signin-private_key", async function(){
 				try{
 					await filling_signin_modal("private_key",'standard',TEST_CONFIG.test_accounts.private_key.pk);
 					await verify_signin_success(TEST_CONFIG.test_accounts.private_key.address);
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
 
 			
 
-			it("standard mode: Signin with nmenomic phrase", async function(){
+			it("Std_signin-nmenomic_phrase", async function(){
 				try{
 					await filling_signin_modal("phrase",'standard',TEST_CONFIG.test_accounts.nmenomic_phrase.words);
 					await verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address);
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 
@@ -126,13 +128,13 @@ describe("Signin modal Test",function(){
 
 
 
-			xit("standard mode: Signin with keystore file",async function(){
+			xit("Std_signin-keystore_file",async function(){
 				try{
 					await filling_signin_modal("keystore",'standard',TEST_CONFIG.test_accounts.keystore.path);
 					await verify_signin_success(TEST_CONFIG.test_accounts.keystore.address);
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
@@ -141,6 +143,7 @@ describe("Signin modal Test",function(){
 
 	describe("Sign in pool modal",function(){
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			try{
 				let account_status = await get_current_state(".account");
 				if(account_status.type!="" || account_status.type !="visitor"){
@@ -151,7 +154,7 @@ describe("Signin modal Test",function(){
 				await click("#header-signin-out");
 			}catch(e){
 				log.error(e.message);
-			    await screenshot(this.currentTest+" error");
+			    await screenshot(this.currentTest+".beforeEach.error");
 			    return Promise.reject(e);
 			}
 		});
@@ -159,26 +162,26 @@ describe("Signin modal Test",function(){
 
 	
 		if(TEST_CONFIG.current_target == "electron"){
-			it("pool modal: Signin with private key", async function(){
+			it("Pool_signin-private_key", async function(){
 				try{
 					await filling_signin_modal("private_key",'pool',TEST_CONFIG.test_accounts.private_key.pk);					
 					await verify_signin_success(TEST_CONFIG.test_accounts.private_key.address,'pool');
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test+".error");
 			        return Promise.reject(e);
 				}
 			});
 
 			
 
-			it("pool modal: Signin with nmenomic phrase", async function(){
+			it("Pool_signin-Signin_with_nmenomic_phrase", async function(){
 				try{
 					await filling_signin_modal("phrase",'pool',TEST_CONFIG.test_accounts.nmenomic_phrase.words);
 					await verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address,'pool');
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title".error");
 			        return Promise.reject(e);
 				}
 
