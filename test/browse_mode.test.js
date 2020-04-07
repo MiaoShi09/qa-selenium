@@ -38,7 +38,7 @@ describe("Browse Mode Test",function(){
 			}
 		})
 
-		it("Pool Management section is hidden when sign in standard mode",async function(){
+		it("Browse_Std-Pool_Management_section_is_hidden",async function(){
 			try{
 				expect(await (await find_ele("#sidebar-menu-pool-management")).isDisplayed()).to.be.false;
 			}catch(e){
@@ -48,7 +48,7 @@ describe("Browse Mode Test",function(){
 			}
 		})
 
-		it("Delegate and withdraw buttons are disabled on dashboard",async function(){
+		it("Browse_Std-Delegate_n_withdraw_btns_are_disabled_on_dashboard",async function(){
 			await goto_dashboard();
 			expect(await (await find_ele(SIGNIN_IN_OUT_BTN)).getText()).to.equal("Sign In");
             log.checked("Sign In buttton is displayed on the screen");
@@ -59,12 +59,12 @@ describe("Browse Mode Test",function(){
 				}
 			}catch(e){
 				log.error(e.message);
-		        await screenshot(this.test.title+" error");
+		        await screenshot(this.test.title+".error");
 		        return Promise.reject(e);
 			}
 		});
 
-		it("Learn more buttons should navigate to help pages", async function(){
+		it("Browse_Std-Learn_more_btns_should_navigate_to_help_pages", async function(){
 			const targets = ["Staking Actions","Staking Pools","Account Page"]
 			await goto_dashboard();
 			
@@ -79,12 +79,12 @@ describe("Browse Mode Test",function(){
 
 			}catch(e){
 				log.error(e.message);
-		        await screenshot(this.test.title+" error");
+		        await screenshot(this.test.title+".error");
 		        return Promise.reject(e);
 			}
 		});
 
-		it("Send, Delegate, Un-Delegate, Withdraw button should be disabled in Account section", async function(){
+		it("Browse_Std-Send_Delegate_UnDelegate_Withdraw_btns_should_be_disabled_in_Account_section", async function(){
 			try{
 				await goto_account();
 			
@@ -106,7 +106,7 @@ describe("Browse Mode Test",function(){
 
 		});
 
-		it("All buttons in Staking section should be disalbed",async function(){
+		it("Browse_Std-All_btns_in_Staking_sect_should_be_disabled",async function(){
 			try{
 				await goto_staking();
 				expect(await (await find_ele(SIGNIN_IN_OUT_BTN)).getText()).to.equal("Sign In");
@@ -171,7 +171,7 @@ describe("Browse Mode Test",function(){
 			}
 		})
 
-		it("Pool Management section is NOT hidden when sign in pool mode",async function(){
+		it("Browse_Pool-Pool_Mgmt_sect_is_NOT_hidden",async function(){
 			try{
 				expect(await (await find_ele("#sidebar-menu-pool-management")).isDisplayed()).to.be.true;
 			}catch(e){
@@ -181,7 +181,7 @@ describe("Browse Mode Test",function(){
 			}
 		})
 
-		it("Button in pool management section is disabled", async function(){
+		it("Browse_Pool-Btns_in_Pool_Mgmt_sect_is_disabled", async function(){
 			try{
 				await goto_pool();
 				expect(await (await find_ele(SIGNIN_IN_OUT_BTN)).getText()).to.equal("Sign In");
@@ -214,7 +214,7 @@ describe("Browse Mode Test",function(){
 			}
 		})
 
-		it("Sign in an INVALID aion address",async function(){
+		it("Browse_neg-Sign_in_an_INVALID_address",async function(){
 			try{
 				await click("#header-signin-out");
 				if(await (await find_ele("#modal_signin")).isDisplayed()){
@@ -234,7 +234,7 @@ describe("Browse Mode Test",function(){
 			
 		})
 
-		it("FIXED-BUG: Sign in pool management mode then open and close signin modal",async function(){
+		it("FIXED_BUG-Sign_in_pool_mode_then_open_close_signin_modal",async function(){
 			try{
 				await signin_with_header_button("visitor","pool",TEST_CONFIG.test_accounts.private_key.address);
 				await click("#header-signin-out");
