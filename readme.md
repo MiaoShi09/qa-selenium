@@ -1,3 +1,9 @@
+Prerequisite:
+* Nodejs 12
+* xclip
+  - `sudo apt-get install xclip`
+
+
 ####for start:
 1. run command `npm install`;
 2. run `export PATH=$PATH:$PWD/node_module/.bin`
