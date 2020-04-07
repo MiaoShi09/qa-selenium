@@ -1,0 +1,95 @@
+#!/usr/bin/env groovy
+
+def message, lastCommit, tag, rpcResult, latest_commit
+
+@NonCPS
+def getCommit(){
+    def changeLogSets = currentBuild.changeSets
+    def m = "";
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length; j++) {
+            def entry = entries[j]
+            m = "${m}\n${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}:\n\t${entry.msg}"
+        }
+    }
+    return m
+}
+
+pipeline {
+    
+
+    agent any
+
+    triggers {
+        cron('H 8 * * *')
+        pollSCM('H/5 * * * *')
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES') 
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+        //disableConcurrentBuilds()
+    }
+
+    stages {
+        
+            stage('fetch si repo') {
+                steps {
+                   
+                   
+checkout([$class: 'GitSCM', branches: [[name: '*/si']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'si'], [$class: 'CloneOption', depth: 0, honorRefspec: true, noTags: true, reference: '', shallow: true, timeout: 20], [$class: 'CheckoutOption', timeout: 25]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '91d339de-e166-410f-901e-65a91e09a190', name: 'origin', refspec: 'si', url: 'https://github.com/aionnetwork/aion_staking_interface.git']]])
+                }
+            }
+
+            stage("build si and unzip package"){
+                steps{
+                    script{
+                        withEnv(["PATH=${env.NODE_10}:${env.PATH}"]){
+                                sh "npm --version"
+                                echo "check nodejs version"
+                                sh "node --version"
+                                echo "update date depandence repo domain name"
+                                sh '''#!/bin/bash
+                                sed -i 's/chaion/makkii-dev/g' package.json
+                                sed -i 's/makkii-coins\\./makkii-js\\./g' package.json
+                                '''
+                                echo "check if package.json updated"
+                                sh "cat package.json"
+                                sh "rm -r node_modules/websocket"
+                                sh 'npm install'
+                                sh 'TEST_MODE=true ./package-linux-x64.sh'
+                                sh 'tar -xf si-amity-linux-x64-*.tar.xz'
+                          
+                        }
+                    }
+                }
+            }
+
+
+    }
+    post{
+        always{
+            script {
+                
+                message = getCommit().toString();
+            }
+            archiveArtifacts artifacts: '*.tar.xz',fingerprint:true
+            
+        }
+
+        success{
+            
+            slackSend channel: '#shanghai_ci',
+                      color: 'good',
+                      message: "${currentBuild.fullDisplayName} completed successfully. Grab the generated builds at ${env.BUILD_URL}\nArtifacts: ${env.BUILD_URL}artifact/ \n${rpcResult} \n Check BenchTest result: ${env.BUILD_URL}artifact/test_results/report.html \nCommit: ${latest_commit}\nChanges:${message}"
+       }
+        
+        failure {
+
+            slackSend channel: '#shanghai_ci',
+                      color: 'danger', 
+                      message: "${currentBuild.fullDisplayName} failed at ${env.BUILD_URL}\n${rpcResult}\nCommit: ${latest_commit}\nChanges:${message}"
+        }
+    }
+}
