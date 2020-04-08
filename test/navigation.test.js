@@ -78,9 +78,10 @@ describe("navigate to different directly by address", function(){
 					try{
 						await skip_to_pool_detail(pool_addr);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/pool/${pool_addr}`;
-
+						await driver.sleep(TEST_CONFIG.short_timeout);
 						let current_url = await driver.getCurrentUrl();
 						log.debug(`Current url is ${current_url} and it should be ${key}.`);
+						
 						if(key === 'exist'){
 							expect(current_url).to.equal(url);
 						}else{
