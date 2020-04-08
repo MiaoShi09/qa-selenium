@@ -9,7 +9,7 @@ var _test_account ='';
 if(TEST_CONFIG.current_target=='electron'){
   describe('Delegation', function() {
     beforeEach(async function() {
-
+      log.updateTest(this.currentTest);
       if(global.driver == null){
         log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
         await start(TEST_CONFIG.current_target);
@@ -26,7 +26,8 @@ if(TEST_CONFIG.current_target=='electron'){
           await signin_phrase();
         }
       }catch(e){
-          await screenshot(this.currentTest.substring(0,10)+" error");
+          log.error(e.message);
+          await screenshot(this.currentTest+".error");
           throw e;
       }
       let balance = await get_current_state(".balance.toNumber()");
@@ -39,41 +40,65 @@ if(TEST_CONFIG.current_target=='electron'){
       await driver.sleep(TEST_CONFIG.short_timeout);
     });
 
-    it('test pools->console (active pool)', async function() {
-      let ri = await find_active_pool();
-      await click_table_single_button('#staking-table-pools', ri + 1, '.button')
-      await delegate_in_console(Math.random());
+    it('Delegate-from_pools_to_console_active', async function() {
+      try{
+        let ri = await find_active_pool();
+        await click_table_single_button('#staking-table-pools', ri + 1, '.button')
+        await delegate_in_console(Math.random());
+      }catch(e){
+        log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+      }
     });
 
-    it('test pools->pool detail->console (active pool)', async function() {
-      let ri = await find_active_pool();
-      await click_table_row('#staking-table-pools', ri + 1);
-      await click('#pool-detail-delegate');
-      await delegate_in_console(Math.random());
+    it('Delegate-from_pools_to_pool_details_console_active', async function() {
+      try{
+        let ri = await find_active_pool();
+        await click_table_row('#staking-table-pools', ri + 1);
+        await click('#pool-detail-delegate');
+        await delegate_in_console(Math.random());
+      }catch(e){
+        log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+      }
     });
 
-    it('test pools -> console (inactive pool)', async function(){
-      let ri = await find_inactive_pool();
-      await click_table_single_button('#staking-table-pools', ri + 1, '.button')
-      expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.true;
-      await click("#modal_staking_warning #modal_staking_warning-cancel");
-      expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.false;
-      await click_table_single_button('#staking-table-pools', ri + 1, '.button');
-      await click("#modal_staking_warning #modal_staking_warning-go-ahead");
-      await delegate_in_console(Math.random());
+    it('Delegate-from_pools_to_console_inactive', async function(){
+      try{
+        let ri = await find_inactive_pool();
+        await click_table_single_button('#staking-table-pools', ri + 1, '.button')
+        expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.true;
+        await click("#modal_staking_warning #modal_staking_warning-cancel");
+        expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.false;
+        await click_table_single_button('#staking-table-pools', ri + 1, '.button');
+        await click("#modal_staking_warning #modal_staking_warning-go-ahead");
+        await delegate_in_console(Math.random());
+      }catch(e){
+        log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+      }
     });
 
-    it('test pools -> pool detail -> console (inactive)',async function(){
-      let ri = await find_inactive_pool();
-      await click_table_row('#staking-table-pools', ri + 1);
-      await click('#pool-detail-delegate');
-      expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.true;
-      await click("#modal_staking_warning #modal_staking_warning-cancel");
-      expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.false;
-      await click('#pool-detail-delegate');
-      await click("#modal_staking_warning #modal_staking_warning-go-ahead");
-      
-      await delegate_in_console(Math.random());
+    it('Delegate-from_pools_to_pool_details_console_inactive',async function(){
+      try{
+        let ri = await find_inactive_pool();
+        await click_table_row('#staking-table-pools', ri + 1);
+        await click('#pool-detail-delegate');
+        expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.true;
+        await click("#modal_staking_warning #modal_staking_warning-cancel");
+        expect(await (await find_ele('#modal_staking_warning')).isDisplayed(),"modal_staking warning expected to show up.").to.be.false;
+        await click('#pool-detail-delegate');
+        await click("#modal_staking_warning #modal_staking_warning-go-ahead");
+        
+        await delegate_in_console(Math.random());
+      }catch(e){
+        log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+      }
     })
 
   });
@@ -86,7 +111,7 @@ var delegate_in_console = async (amount) => {
     await pop_submit_button();
     await submit_transaction();
     await driver.sleep(TEST_CONFIG.wait_time);
-    await screenshot("delegate_in_console");
+    //await screenshot("delegate_in_console");
     await click("#modal-transaction-success-copy");
     let txhash = await get_clipboard_content();
     let receiver = await (await find_ele(".console-bottom .top #staking-console-bottom-pool-list .common-select-select span:nth-child(2)")).getAttribute("title");

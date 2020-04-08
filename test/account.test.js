@@ -22,7 +22,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				await click("#header-signin-out");
 			})
 
-			it("Click copy button copy current address into clipboard",async function(){
+			it("Common_acc-Copy_address_into_clipboard",async function(){
+				log.updateTest(this.test);
 				await click("#account-copy-refresh-clear-button-group img.copy");
 				expect(await get_clipboard_content()).to.equal(MAIN_TEST_ACCOUNT.address);
 			})
@@ -47,7 +48,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				await click("#header-signin-out");
 			})
 
-			it("Send button should be disabled if current balance is 0", async function(){
+			it("Acc_no_bal-Send_btn_should_be_disabled", async function(){
+				log.updateTest(this.test);
 				try{	
 					let balance = await get_current_state(".balance.toString()");
 					log.debug("check state balance");
@@ -58,11 +60,12 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await send_btn.getAttribute("class")).to.have.string("disable");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
-			it("Delegate button should be disabled if current balance is 0", async function(){
+			it("Acc_no_bal-Delegate_btn_should_be_disabled", async function(){
+				log.updateTest(this.test);
 				try{
 					let balance = await get_current_state(".balance.toString()");
 					log.debug(balance.toString());
@@ -71,12 +74,12 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await Delegate_btn.getAttribute("class")).to.have.string("disable");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
-			it("Un-Delegate button should be disabled if current staking is 0",async function(){
-
+			it("Acc_no_staking-UnDelegate_btn_should_be_disabled",async function(){
+				log.updateTest(this.test);
 				try{
 					let stake = await get_current_state(".my_total_cur_stake.toString()");
 					log.info(stake);
@@ -87,12 +90,13 @@ if(TEST_CONFIG.current_target == "electron"){
 					}	
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
 
-			it("Withdraw button should be disabled if current reward is 0", async function(){
+			it("Acc_no_rewards-Withdraw_btn_should_be_disabled", async function(){
+				log.updateTest(this.test);
 				try{
 					let rewards = await get_current_state(".my_total_cur_rewards.toString()");
 					log.info(rewards);
@@ -103,7 +107,7 @@ if(TEST_CONFIG.current_target == "electron"){
 					}	
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 		
@@ -142,7 +146,8 @@ if(TEST_CONFIG.current_target == "electron"){
 				await goto_account();
 			})
 
-			it("Send button should navigate to staking > transfter section ", async function(){
+			it("Acc_bal-Send_btn_should_navigate_to_transfter_sect", async function(){
+				log.updateTest(this.test);
 				try{
 					let send_btn = (await find_eles(".balance .button"))[0];
 					await send_btn.click();
@@ -152,12 +157,13 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await selected_option_ele.getText()).to.equal("send");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
 
-			it("Delegate button should navigate to staking pools", async function(){
+			it("Acc_bal-Delegate_btn_should_navigate_to_staking_pools", async function(){
+				log.updateTest(this.test);
 				try{
 					let Delegate_btn = await find_ele("#account-delegate");
 					await Delegate_btn.click();
@@ -168,12 +174,13 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("Pools");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
 
-			it("Un-delegate button should navigate to staking my delegations", async function(){
+			it("Acc_staking-UnDelegate_btn_should_navigate_to_my_delegations", async function(){
+				log.updateTest(this.test);
 				try{
 					let undelegation_btn = await find_ele("#account-undelegate");
 					await undelegation_btn.click();
@@ -184,12 +191,13 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("My Delegations");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
 
-			it("Withdraw button should navigate to staking rewards", async function(){
+			it("Acc_rewards-Withdraw_btn_should_navigate_to_staking_rewards", async function(){
+				log.updateTest(this.test);
 				try{
 					let undelegation_btn = await find_ele("#account-withdraw");
 					await undelegation_btn.click();
@@ -200,7 +208,7 @@ if(TEST_CONFIG.current_target == "electron"){
 					expect(await (await find_ele("#staking .tab_nav .active")).getText()).to.equal("Rewards & Auto-delegation");
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			})

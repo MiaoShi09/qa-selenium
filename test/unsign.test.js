@@ -28,7 +28,7 @@ const SIGN_IN_MODAL_ELES = {
 
 describe("Unsign Tests",function(){
     beforeEach(async ()=>{
-      
+        log.updateTest(this.currentTest);
         if(global.driver == null){
             log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
             await start(TEST_CONFIG.current_target);
@@ -43,7 +43,7 @@ describe("Unsign Tests",function(){
                 log.info(e.message);
                 // await click("#sidebar-menu-account");
                 // await driver.wait(until.elementLocated(By.css(SIGN_OUT_CROSS_BTN)), TEST_CONFIG.short_timeout);
-                await screenshot(this.currentTest+" error");
+                await screenshot(this.currentTest+".beforeEach.error");
                 await signout_from_staking();
             }
             type = await get_current_state(".account.type");
@@ -77,7 +77,7 @@ describe("Unsign Tests",function(){
             return Promise.resolve()
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
@@ -142,7 +142,7 @@ describe("Unsign Tests",function(){
 
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
     });
@@ -180,7 +180,7 @@ describe("Unsign Tests",function(){
         }catch(e){
             log.error(e.message);
            
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
@@ -196,7 +196,7 @@ describe("Unsign Tests",function(){
         }catch(e){
             log.error(e.message);
            
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
@@ -227,7 +227,7 @@ describe("Unsign Tests",function(){
              
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
@@ -249,7 +249,7 @@ describe("Unsign Tests",function(){
             }
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
@@ -280,17 +280,23 @@ describe("Unsign Tests",function(){
             }
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
     });
 
     it("Unsign-User_should_not_be_able_to_access_console_page", async function(){
-        let console_url = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/staking/console";
-        await driver.navigate(console_url);
-        await driver.sleep(TEST_CONFIG.short_timeout);
-        expect(await driver.getCurrentUrl()).not.to.equal(console_url);
-        log.checked("current url is not "+console_url);
+        try{
+            let console_url = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/staking/console";
+            await driver.navigate(console_url);
+            await driver.sleep(TEST_CONFIG.short_timeout);
+            expect(await driver.getCurrentUrl()).not.to.equal(console_url);
+            log.checked("current url is not "+console_url);
+        }catch(e){
+            log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+        }
     })
 });
 
