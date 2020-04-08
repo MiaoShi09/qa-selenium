@@ -79,6 +79,15 @@ global.click = async function(selector, parent = driver,time = TEST_CONFIG.wait_
 global.wait_for_ele =  function(selector){
     return driver.wait(until.elementLocated(By.css(selector)), TEST_CONFIG.long_timeout);
 }
+global.wait_for_ele_appear = async function(selector){
+    let i = 0;
+    let element = await find_ele(selector)
+    while(!(await element.isDisplayed()) || i < 5){
+        await driver.sleep(TEST_CONFIG.short_timeout);
+        i++;
+    }
+    return (await element.isDisplayed());
+}
 
 global.input = async function(selector, key = '', time = TEST_CONFIG.wait_time) {
     await (await find_ele(selector)).clear();

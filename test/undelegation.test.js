@@ -66,6 +66,9 @@ if(TEST_CONFIG.current_target == "electron"){
 				expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(my_delegation[ri].stake));
 				await click("#modal-transaction-confirm-button");
 				await wait_for_ele("#modal-transaction-success");
+				if(!(await wait_for_ele_appear("#modal-transaction-success"))){
+					throw new Error("unable to get transaction success modal")
+				}
 				await driver.sleep(TEST_CONFIG.wait_time);
 				await click("#modal-transaction-success-copy");
 			    let txhash = await get_clipboard_content();
@@ -99,6 +102,9 @@ if(TEST_CONFIG.current_target == "electron"){
 				expect(await (await find_ele("#staking-console-transaction-amount")).getText()).to.equal(formatNumber(undelegate_amount));
 				await click("#modal-transaction-confirm-button");
 				await wait_for_ele("#modal-transaction-success");
+				if(!(await wait_for_ele_appear("#modal-transaction-success"))){
+					throw new Error("unable to get transaction success modal")
+				}
 				await driver.sleep(TEST_CONFIG.wait_time);
 				await click("#modal-transaction-success-copy");
 				let txhash = await get_clipboard_content();
