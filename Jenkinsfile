@@ -1,3 +1,5 @@
+// This is jenkinsfile for qa_selenium repo
+
 #!/usr/bin/env groovy
 
 def message, lastCommit, tag, rpcResult, latest_commit

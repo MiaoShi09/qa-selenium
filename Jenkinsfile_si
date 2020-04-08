@@ -1,3 +1,5 @@
+// this is jenkinsfile for aion_staking_interface repo
+
 #!/usr/bin/env groovy
 
 def message, lastCommit, tag, rpcResult, latest_commit
