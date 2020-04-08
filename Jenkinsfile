@@ -105,7 +105,12 @@ checkout([$class: 'GitSCM', branches: [[name: '*/refactoring']], doGenerateSubmo
                       color: 'good',
                       message: "${currentBuild.fullDisplayName} completed successfully. Grab the generated builds at ${env.BUILD_URL}\nArtifacts: ${env.BUILD_URL}artifact/ \n${rpcResult} \n Check BenchTest result: ${env.BUILD_URL}artifact/test_results/report.html \nCommit: ${latest_commit}\nChanges:${message}"
        }
-        
+        unstable{
+            slackSend channel: '#shanghai_ci',
+                      color: 'warning',
+                      message: "${currentBuild.fullDisplayName} completed unstable. Grab the generated builds at ${env.BUILD_URL}\nArtifacts: ${env.BUILD_URL}artifact/ \n${rpcResult} \n Check BenchTest result: ${env.BUILD_URL}artifact/test_results/report.html \nCommit: ${latest_commit}\nChanges:${message}"
+        }
+
         failure {
            
 
