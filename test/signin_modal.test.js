@@ -58,7 +58,7 @@ describe("Signin modal Test",function(){
 					expect(await( await find_ele("#modal_signin")).isDisplayed()).to.be.true;
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+" error");
 			        return Promise.reject(e);
 				}
 			});
@@ -76,7 +76,7 @@ describe("Signin modal Test",function(){
 					}
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title.substring(0,10)+" error");
+			        await screenshot(this.test.title+" error");
 			        return Promise.reject(e);
 				}
 
@@ -168,7 +168,7 @@ describe("Signin modal Test",function(){
 					await verify_signin_success(TEST_CONFIG.test_accounts.private_key.address,'pool');
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test+".error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
@@ -181,7 +181,7 @@ describe("Signin modal Test",function(){
 					await verify_signin_success(TEST_CONFIG.test_accounts.nmenomic_phrase.address,'pool');
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title".error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 
