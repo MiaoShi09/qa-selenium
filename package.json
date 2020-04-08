@@ -2,7 +2,7 @@
   "scripts": {
     "chrome-only": "./node_modules/.bin/mocha --file=test/chrome.setup.js --no-timeouts",
     "upk-only": "./node_modules/.bin/mocha --file=./test/electron.setup.js --no-timeouts",
-    "clean-test-log": "rm -r test_logs*"
+    "clean-test-log": "rm -r test_logs* test_reports"
   },
   "dependencies": {
     "aion-web3": "^1.2.7-beta.0",
@@ -15,7 +15,9 @@
   "description": "1. npm i -g selenium-webdriver 2. download chromedriver for your browser and add it to system path 3. start staking interface 4. node test",
   "version": "1.0.0",
   "main": "",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha-junit-reporter": "^1.23.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/makkii-dev/qa-selenium.git"

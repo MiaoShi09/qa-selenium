@@ -1,3 +1,5 @@
+// This is jenkinsfile for qa_selenium repo
+
 #!/usr/bin/env groovy
 
 def message, lastCommit, tag, rpcResult, latest_commit
@@ -22,7 +24,9 @@ pipeline {
     agent any
 
     triggers {
-        cron('H 23 * * *')
+
+        cron('H 9 * * *')
+
         pollSCM('H/5 * * * *')
     }
 
@@ -33,38 +37,7 @@ pipeline {
     }
 
     stages {
-        
-            stage('fetch si repo') {
-                steps {
-                    dir("aion_staking_interface"){
-                         checkout([$class: 'GitSCM',
-                            branches: [[name: '*/si']],
-                            extensions: [[$class: 'CloneOption', timeout: 20]],
-                            gitTool: 'Default', 
-                            userRemoteConfigs: [[credentialsId: '91d339de-e166-410f-901e-65a91e09a190',url: 'https://github.com/aionnetwork/aion_staking_interface.git']]
-                        ]);
-                     }
-
-                }
-            }
-
-            stage("build si and unzip package"){
-                steps{
-                    script{
-                        withEnv("PATH=${env.NODE10}:${env.PATH}"){
-                            dir("aion_staking_interface"){
-                                sh 'npm install'
-                                sh 'TEST_MODE=true ./package-linux-x64.sh'
-                                sh 'tar -xf si-amity-linux-x64-*.tar.xz'
-                            }
-                        }
-                    }
-                }
-            }
-
-        
-
-        
+         
             stage("Automation Preparation"){
                  steps{
                     script{
@@ -76,28 +49,41 @@ pipeline {
                     }
                     echo "copy test_config file into workspace"
                     sh "cp $HOME/local_ci/resources/test_config.json test_config.json"
+                    copyArtifacts excludes: 'si-mainnet-linux-x64-*.tar.xz', filter: 'si-amity-linux-x64-*.tar.xz', fingerprintArtifacts: true, projectName: 'staking-interface', selector: lastSuccessful(), target: 'aion_staking_interface'
+                    dir("aion_staking_interface"){
+                        sh "tar -xf si-amity*.tar.xz";
+                        sh "ls"
+                        echo "${env.NODE_12}"
+                    }
                 }
             }
             stage("Fetch qa-selenium repo"){
                  steps{
-                     checkout([$class: 'GitSCM',
-                        branches: [[name: '*/refactoring']],
-                        extensions: [[$class: 'CloneOption', timeout: 20]],
-                        gitTool: 'Default', 
-                        userRemoteConfigs: [[url: 'https://github.com/MiaoShi/qa-selenium.git']]
-                    ]);
-                 }
+checkout([$class: 'GitSCM', branches: [[name: '*/refactoring']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'MiaoShi09', url: 'https://github.com/MiaoShi09/qa-selenium.git']]])               }
             }
 
             stage("Install Dependence and run test"){
                  steps{
                     script{
-                        withEnv("PATH=${env.PWD}/node_modules/.bin:${env.NODE12}:${env.PATH}"){
+                        withEnv(["PATH=${env.RESOURCES}/chromedriver:${env.WORKSPACE}/node_modules/.bin:${env.NODE_12}:${env.PATH}"]){
+                            echo "check node version expected to be 12"
+                            sh "node --version"
+                            echo "check path"
+                            sh "echo $PATH"
                             sh 'npm install'
                             echo "check chromedriver version"
                             sh "chromedriver73 --version"
                             sh "nohup chromedriver73 --verbose > chromedriver73.log 2>&1 &"
-                            sh 'mocha --file=./test/electron.setup.js --no-timeouts'
+
+                            script{
+                                try{
+                                   sh 'mocha --file=./test/electron.setup.js --no-timeouts'
+                                }catch(Exception e){
+                                    echo "this is not stable"
+                                    currentBuild.result = 'UNSTABLE'
+                                }
+                            }
+
                         }
                     }
                 }
@@ -111,21 +97,29 @@ pipeline {
                 //If you have some code like this, you have to convert it to String like this: "${my_var}".toString()
                 message = getCommit().toString();
             }
-            archiveArtifacts artifacts: 'aion_staking_interface/*.tar.xz,test_logs*/*.*',fingerprint:true
+
+            junit 'test_reports/*.xml'
+            archiveArtifacts artifacts: 'aion_staking_interface/*.tar.xz,test_logs*/*.*,test_reports/*.xml',fingerprint:true
             
         }
 
         success{
-            //archiveArtifacts artifacts: '*.tar.gz,package/*,target/release/aion',fingerprint:true
-            slackSend channel: '@Miao',
+            
+            slackSend channel: '#shanghai_ci',
                       color: 'good',
                       message: "${currentBuild.fullDisplayName} completed successfully. Grab the generated builds at ${env.BUILD_URL}\nArtifacts: ${env.BUILD_URL}artifact/ \n${rpcResult} \n Check BenchTest result: ${env.BUILD_URL}artifact/test_results/report.html \nCommit: ${latest_commit}\nChanges:${message}"
        }
-        
-        failure {
-            //cleanWs();
+        unstable{
+            slackSend channel: '#shanghai_ci',
+                      color: 'warning',
+                      message: "${currentBuild.fullDisplayName} completed unstable. Grab the generated builds at ${env.BUILD_URL}\nArtifacts: ${env.BUILD_URL}artifact/ \n${rpcResult} \n Check BenchTest result: ${env.BUILD_URL}artifact/test_results/report.html \nCommit: ${latest_commit}\nChanges:${message}"
+        }
 
-            slackSend channel: '@Miao',
+
+        failure {
+           
+
+            slackSend channel: '#shanghai_ci',
                       color: 'danger', 
                       message: "${currentBuild.fullDisplayName} failed at ${env.BUILD_URL}\n${rpcResult}\nCommit: ${latest_commit}\nChanges:${message}"
         }

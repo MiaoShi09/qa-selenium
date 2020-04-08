@@ -28,7 +28,7 @@ const SIGN_IN_MODAL_ELES = {
 
 describe("Unsign Tests",function(){
     beforeEach(async ()=>{
-      
+        log.updateTest(this.currentTest);
         if(global.driver == null){
             log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
             await start(TEST_CONFIG.current_target);
@@ -43,7 +43,7 @@ describe("Unsign Tests",function(){
                 log.info(e.message);
                 // await click("#sidebar-menu-account");
                 // await driver.wait(until.elementLocated(By.css(SIGN_OUT_CROSS_BTN)), TEST_CONFIG.short_timeout);
-                await screenshot(this.currentTest+" error");
+                await screenshot(this.currentTest+".beforeEach.error");
                 await signout_from_staking();
             }
             type = await get_current_state(".account.type");
@@ -52,7 +52,7 @@ describe("Unsign Tests",function(){
 
     });
 
-    it("Dashboard without signin", async function(){
+    it("Unsign-Dashboard", async function(){
         await goto_dashboard();
         try{
             let active_btn = await find_ele(".active");
@@ -77,12 +77,12 @@ describe("Unsign Tests",function(){
             return Promise.resolve()
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
     });
-    it("Account without signin",async function(){
+    it("Unsign-Account",async function(){
         await goto_account();
         try{
             let active_btn = await find_ele(".active");
@@ -108,11 +108,11 @@ describe("Unsign Tests",function(){
 
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
     });
-    it("Staking without signin",async function(){
+    it("Unsign-Staking",async function(){
         await goto_staking();
         try{
             let active_btn = await find_ele(".active");
@@ -128,6 +128,10 @@ describe("Unsign Tests",function(){
                 expect(await (await find_ele(selector)).isDisplayed()).to.be.true;
                 log.checked(selector+" is displayed on screen as expected.");
             });
+            HIDDEN_ELES.forEach(async(selector)=>{
+                expect(await (await find_ele(selector)).isDisplayed()).to.be.false;
+                log.checked(selector+" is NOT displayed on screen as expected.");
+            });
 
             expect(await (await find_ele(SIGN_OUT_CROSS_BTN)).isDisplayed()).to.be.false;
             expect(await (await find_ele(ACCOUNT_ADDR)).getAttribute("value")).to.equal("");
@@ -138,11 +142,11 @@ describe("Unsign Tests",function(){
 
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
     });
-    it("Open signin modal from dashbard", async function(){
+    it("Unsign-Open_signin_modal_from_dashbard", async function(){
          await goto_dashboard();
          try{
             log.info("try open sign in modal from header btn");
@@ -161,7 +165,7 @@ describe("Unsign Tests",function(){
          }
     });
 
-    it("Open signin modal from account", async function(){
+    it("Unsign-Open_signin_modal_from_account", async function(){
         await goto_account();
         try{
              log.info("try open sign in modal from header btn");
@@ -176,12 +180,12 @@ describe("Unsign Tests",function(){
         }catch(e){
             log.error(e.message);
            
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
     });
-    it("Open signin modal from staking -headers", async function(){
+    it("Unsign-Open_signin_modal_from_staking_headers", async function(){
         await goto_staking();
         await driver.sleep(TEST_CONFIG.wait_time);
         try{
@@ -192,13 +196,13 @@ describe("Unsign Tests",function(){
         }catch(e){
             log.error(e.message);
            
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
     })
 
-    it("Open signin modal from staking - tabs", async function(){
+    it("Unsign-Open_signin_modal_from_staking_tabs", async function(){
          await goto_staking();
          await driver.sleep(TEST_CONFIG.wait_time);
          try{
@@ -223,13 +227,13 @@ describe("Unsign Tests",function(){
              
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
     });
 
-    it("Open signin modal from staking - random delegate btn", async function(){
+    it("Unsign-Open_signin_modal_from_staking_random_pool_delegate_btn", async function(){
         await goto_staking();
         await driver.sleep(TEST_CONFIG.short_timeout);
         try{
@@ -245,13 +249,13 @@ describe("Unsign Tests",function(){
             }
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
 
     });
 
-    it("Open siginin modal from staking pool page", async function(){
+    it("Unsign-Open_siginin_modal_from_staking_pool_details_page", async function(){
         await goto_staking();
         await driver.sleep(TEST_CONFIG.short_timeout);
          try{
@@ -276,17 +280,23 @@ describe("Unsign Tests",function(){
             }
         }catch(e){
             log.error(e.message);
-            await screenshot(this.test.title+" error");
+            await screenshot(this.test.title+".error");
             return Promise.reject(e);
         }
     });
 
-    it("User should not be able to access console page", async function(){
-        let console_url = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/staking/console";
-        await driver.navigate(console_url);
-        await driver.sleep(TEST_CONFIG.short_timeout);
-        expect(await driver.getCurrentUrl()).not.to.equal(console_url);
-        log.checked("current url is not "+console_url);
+    it("Unsign-User_should_not_be_able_to_access_console_page", async function(){
+        try{
+            let console_url = TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/staking/console";
+            await driver.navigate(console_url);
+            await driver.sleep(TEST_CONFIG.short_timeout);
+            expect(await driver.getCurrentUrl()).not.to.equal(console_url);
+            log.checked("current url is not "+console_url);
+        }catch(e){
+            log.error(e.message);
+            await screenshot(this.test.title+".error");
+            return Promise.reject(e);
+        }
     })
 });
 

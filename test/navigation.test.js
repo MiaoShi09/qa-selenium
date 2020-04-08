@@ -31,14 +31,15 @@ const default_level_one_url =  TEST_CONFIG.domain[TEST_CONFIG.current_target]+"/
 describe("navigate to different directly by address", function(){
 	describe("common navigation",function(){
 		for(let i = 0;i < 3;i++){
-			it("directly go to "+ menu_items[i],async function(){
+			it("common_nav-directly_go_to_"+ menu_items[i],async function(){
+				log.updateTest(this.test);
 				try{
 					await skip_to_menu_item(menu_items[i]);
 					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[i]}`;
 					expect(await driver.getCurrentUrl()).to.equal(expected_url);
 				}catch(e){
 					log.error(e.message);
-			        await screenshot(this.test.title+" error");
+			        await screenshot(this.test.title+".error");
 			        return Promise.reject(e);
 				}
 			});
@@ -47,8 +48,8 @@ describe("navigate to different directly by address", function(){
 		for(let key in dashboard_help_suffixs){
 			
 			dashboard_help_suffixs[key].forEach((help_page,index)=>{
-				it("direly go to help page "+help_page, async function(){
-
+				it("common_nav-directly_go_to_help_page_"+help_page, async function(){
+					log.updateTest(this.test);
 					try{
 						await skip_to_help_page(help_page);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/dashboard/help/${help_page}`;
@@ -63,7 +64,7 @@ describe("navigate to different directly by address", function(){
 						}
 					}catch(e){
 						log.error(e.message);
-				        await screenshot(this.test.title+" error");
+				        await screenshot(this.test.title+".error");
 				        return Promise.reject(e);
 					}
 				})
@@ -72,7 +73,8 @@ describe("navigate to different directly by address", function(){
 
 		for(let key in pool_detail_suffixs){
 			pool_detail_suffixs[key].forEach((pool_addr,index)=>{
-				it("direly go to pool page "+pool_addr, async function(){
+				it("common_nav-directly_go_to_pool_detail_"+pool_addr, async function(){
+					log.updateTest(this.test);
 					try{
 						await skip_to_pool_detail(pool_addr);
 						let url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/pool/${pool_addr}`;
@@ -89,7 +91,7 @@ describe("navigate to different directly by address", function(){
 						}
 					}catch(e){
 						log.error(e.message);
-				        await screenshot(this.test.title+" error");
+				        await screenshot(this.test.title+".error");
 				        return Promise.reject(e);
 					}
 				})
@@ -101,6 +103,7 @@ describe("navigate to different directly by address", function(){
 
 		//make sure the user does not sign in any address
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			if(global.driver == null){
 	            log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
 	            await start(TEST_CONFIG.current_target);
@@ -114,23 +117,29 @@ describe("navigate to different directly by address", function(){
 	            }catch(e){
 	                log.error(e.message);
 
-	                await screenshot(this.currentTest.substring(0,10)+" error");
+	                await screenshot(this.currentTest+".error");
 	                await signout_from_staking();
 	            }
 	            type = await get_current_state(".account.type");
 	         }
 		});
-		it("users should NOT be able to access pool section", async function(){
-			await skip_to_menu_item(menu_items[3]);
-			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
-			log.info(await driver.getCurrentUrl());
-			expect(await driver.getCurrentUrl()).to.equal(default_level_one_url);
+		it("unsign_nav-users_CANNOT_direct_to_pool_section", async function(){
+			try{
+				await skip_to_menu_item(menu_items[3]);
+				let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
+				log.info(await driver.getCurrentUrl());
+				expect(await driver.getCurrentUrl()).to.equal(default_level_one_url);
+			}catch(e){
+				log.error(e.message);
+                await screenshot(this.test.title+".error");
+                throw e;
+			}
 		});
 
 
 		table_names.forEach((tab_name,index)=>{
 
-			it("users should stay on staking pools tab when go to "+tab_name+" directly from url",async function(){
+			it("unsign_nav-users_go_to_staking_tab_"+tab_name+"_directly_from_url",async function(){
 				try{
 					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${tab_name}`
 					await skip_to_staking_tab(tab_name);
@@ -138,7 +147,7 @@ describe("navigate to different directly by address", function(){
 					log.checked(`${expected_url} go to staking pools`);
 				}catch(e){
  					log.error(e.message);
-	                await screenshot(this.test.title.substring(0,10)+" error");
+	                await screenshot(this.test.title+".error");
 	                throw e;
 				}
 			});
@@ -148,6 +157,7 @@ describe("navigate to different directly by address", function(){
 
 	describe("when user uses standard mode",function(){
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			let account_state = await get_current_state(".account");
 			log.debug(account_state);
 
@@ -160,7 +170,7 @@ describe("navigate to different directly by address", function(){
 		})
 
 
-		it("users should NOT be able to  access pool section", async function(){
+		it("std_nav-users_CANNOT_access_pool_section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
 			expect(await driver.getCurrentUrl()).to.equal(default_level_one_url);
@@ -169,7 +179,7 @@ describe("navigate to different directly by address", function(){
 
 		table_names.forEach((tab_name,index)=>{
 
-			it(`users should go to ${staking_content[tab_name]|| staking_content.default} when go to ${tab_name} directly from url`,async function(){
+			it(`std_nav-users_go_to_staking_tab_${tab_name}_directly_from_url`,async function(){
 				try{
 					let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/staking/${tab_name}`
 					await skip_to_staking_tab(tab_name);
@@ -177,7 +187,7 @@ describe("navigate to different directly by address", function(){
 					log.checked(`${expected_url} go to staking pools ${staking_content[tab_name]|| staking_content.default}`);
 				}catch(e){
  					log.error(e.message);
-	                await screenshot(this.test.title.substring(0,10)+" error");
+	                await screenshot(this.test.title+".error");
 	                throw e;
 				}
 			});
@@ -187,6 +197,7 @@ describe("navigate to different directly by address", function(){
 
 	describe("when user uses pool mode",function(){
 		beforeEach(async function(){
+			log.updateTest(this.currentTest);
 			let account_state = await get_current_state(".account");
 
 			while(account_state.type !="visitor" || account_state.mode != "pool" ){
@@ -197,7 +208,7 @@ describe("navigate to different directly by address", function(){
 			} 
 		})
 
-		it("users should be able to access pool section", async function(){
+		it("pool_nav-direct_to_pool_section", async function(){
 			await skip_to_menu_item(menu_items[3]);
 			let expected_url = `${ TEST_CONFIG.domain[TEST_CONFIG.current_target] }/${menu_items[3]}`;
 			expect(await driver.getCurrentUrl()).to.equal(expected_url);
