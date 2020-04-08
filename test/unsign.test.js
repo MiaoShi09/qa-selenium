@@ -27,7 +27,7 @@ const SIGN_IN_MODAL_ELES = {
 
 
 describe("Unsign Tests",function(){
-    beforeEach(async ()=>{
+    beforeEach(async function(){
         log.updateTest(this.currentTest);
         if(global.driver == null){
             log.info("unable to find driver; re-open new test target:"+TEST_CONFIG.current_target)
