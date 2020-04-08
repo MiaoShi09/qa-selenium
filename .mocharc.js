@@ -3,7 +3,8 @@
 module.exports = {
 	"reporter": ['mocha-junit-reporter'],
     "reporterOptions": {
-        "mochaFile": "./test_reports/test"+Date.now()+".xml"
+        "mochaFile": "./test_reports/test"+Date.now()+".xml",
+        "outputs":true
     },
   "spec": [
     "./test/**.test.js"
