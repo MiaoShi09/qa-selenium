@@ -11,7 +11,14 @@ global.close_or_open_modal_sign = async function(){
 }
 
 global.close_modal = async function(){
+    //check if transaction failure modal shows on screen
     log.info("Close the modal");
+    if(await (await find_ele("#modal_transaction_error")).isDisplayed()){
+        log.info("Transaction  error modal is on the screen");
+        return click("#modal_transaction_error #modal_transaction_error-close");
+    }
+
+    
     let close_cross_imgs = await find_eles("svg[id$='-close']");
     log.debug("close image elements on current page"+close_cross_imgs.length);
 
