@@ -49,7 +49,7 @@ if(TEST_CONFIG.current_target == "electron"){
 			log.updateTest(this.test);
 			try{
 				await click("#staking-tab-delegations");
-				let my_delegation = await get_delegations_details();
+				let my_delegation = await get_non_zero_delegation();
 				if(my_delegation.length == 0) throw new Error("Current account does not have any delegation; unable to perform delegation transfering.")
 				let ri = get_num_from_0_to_less_n(my_delegation.length);
 				let to_i = get_num_from_0_to_less_n(my_delegation.length);
@@ -91,7 +91,7 @@ if(TEST_CONFIG.current_target == "electron"){
 			log.updateTest(this.test);
 			try{
 				await click("#staking-tab-delegations");
-				let my_delegation = await get_delegations_details();
+				let my_delegation = await get_non_zero_delegation();
 				if(my_delegation.length == 0) throw new Error("Current account does not have any stake; unable to perform transfer.")
 				let ri = get_num_from_0_to_less_n(my_delegation.length);
 				let to_i = get_num_from_0_to_less_n(my_delegation.length);
@@ -139,7 +139,7 @@ if(TEST_CONFIG.current_target == "electron"){
 			log.updateTest(this.test);
 			try{
 				await click("#staking-tab-delegations");
-				let my_delegation = await get_delegations_details();
+				let my_delegation = await get_non_zero_delegation();
 				let ri = get_num_from_0_to_less_n(my_delegation.length)
 				await click_table_single_button_by_pool("#staking-table-delegations",pool_map[my_delegation[ri].pool].name,"transfer");
 
